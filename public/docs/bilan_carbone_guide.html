@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprendre le Bilan Carbone - EcoTrace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: transparent; color: #1e293b; }
+        h1, h2, h3, h4, h5 { font-family: 'Fredoka', sans-serif; }
+        .doc-section { margin-bottom: 3.5rem; }
+        .doc-title { color: #206bc4; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.75rem; margin-top: 2rem; margin-bottom: 1.5rem; }
+        .doc-subtitle { color: #0ca678; margin-top: 1.75rem; margin-bottom: 1rem; }
+        .concept-card { border-radius: 12px; transition: transform 0.2s, box-shadow 0.2s; }
+        .concept-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+        .formula-box { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #f8fafc; border-radius: 10px; padding: 1.25rem 1.5rem; font-family: 'Courier New', monospace; font-size: 1.05rem; border-left: 5px solid #206bc4; margin: 1.25rem 0; }
+        .scope-badge-1 { background-color: #d63939; color: #fff; }
+        .scope-badge-2 { background-color: #f76707; color: #fff; }
+        .scope-badge-3 { background-color: #206bc4; color: #fff; }
+        .table-custom th { background-color: #f8fafc; font-weight: 700; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.04em; }
+        .summary-nav { position: sticky; top: 1rem; }
+        .summary-link { display: block; padding: 0.4rem 0.8rem; color: #475569; text-decoration: none; border-left: 3px solid transparent; border-radius: 0 6px 6px 0; font-size: 0.92rem; }
+        .summary-link:hover, .summary-link.active { color: #206bc4; background-color: #f1f5f9; border-left-color: #206bc4; font-weight: 700; }
+        .badge-pill-soft { padding: 0.35rem 0.75rem; border-radius: 50px; font-weight: 600; font-size: 0.8rem; }
+        .callout-info { border-left: 4px solid #206bc4; background-color: #f0f7ff; padding: 1.25rem; border-radius: 0 8px 8px 0; }
+        .callout-success { border-left: 4px solid #0ca678; background-color: #f0fdf4; padding: 1.25rem; border-radius: 0 8px 8px 0; }
+        .callout-warning { border-left: 4px solid #f59f00; background-color: #fffbeb; padding: 1.25rem; border-radius: 0 8px 8px 0; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container-fluid py-4">
+
+        <!-- En-tête principal -->
+        <div class="card shadow-sm border-0 mb-4 bg-primary text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #0d9488 100%);">
+            <div class="card-body p-4 p-md-5">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <span class="badge bg-white text-primary mb-3 text-uppercase px-3 py-1 font-monospace fw-bold">Référentiel Expert • Méthode ADEME / GHG Protocol / ISO 14064</span>
+                        <h1 class="display-5 fw-bold mb-2 text-white" style="letter-spacing: -0.02em;">
+                            <i class="fas fa-globe-americas me-2"></i> Comprendre le Bilan Carbone
+                        </h1>
+                        <p class="fs-3 opacity-90 mb-0 font-weight-normal">
+                            Les tenants, aboutissants et fondements techniques de la comptabilité carbone : des principes physiques aux calculs monétaires de la chaîne de valeur.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-center text-lg-end mt-4 mt-lg-0">
+                        <div class="d-inline-block bg-white text-dark p-3 rounded-3 shadow text-start" style="max-width: 320px;">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-green text-white p-2 rounded-circle me-2"><i class="fas fa-leaf"></i></span>
+                                <strong class="fs-4">EcoTrace Engine</strong>
+                            </div>
+                            <div class="text-muted small">
+                                Analyse automatisée Scope 1, 2 & 3 • Base Empreinte ADEME • Double hybridation Monétaire + Physique OSRM.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Menu Sommaire Latéral Flottant -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="card shadow-sm border-0 summary-nav">
+                    <div class="card-header bg-light py-3">
+                        <h4 class="card-title m-0 text-muted"><i class="fas fa-list-ul me-2"></i> Sommaire Technique</h4>
+                    </div>
+                    <div class="card-body p-2">
+                        <a href="#sec-1" class="summary-link"><i class="fas fa-seedling me-2 text-muted"></i> 1. Enjeux & Définitions</a>
+                        <a href="#sec-2" class="summary-link"><i class="fas fa-atom me-2 text-muted"></i> 2. L'Unité Universelle : kgCO₂e</a>
+                        <a href="#sec-3" class="summary-link"><i class="fas fa-layer-group me-2 text-muted"></i> 3. Les 3 Scopes Décryptés</a>
+                        <a href="#sec-4" class="summary-link"><i class="fas fa-calculator me-2 text-muted"></i> 4. Physique vs Monétaire</a>
+                        <a href="#sec-5" class="summary-link"><i class="fas fa-database me-2 text-muted"></i> 5. La Base Empreinte ADEME</a>
+                        <a href="#sec-6" class="summary-link"><i class="fas fa-cogs me-2 text-muted"></i> 6. Le Pipeline EcoTrace 2</a>
+                        <a href="#sec-7" class="summary-link"><i class="fas fa-tachometer-alt me-2 text-muted"></i> 7. Ratios & Intensité Carbone</a>
+                        <a href="#sec-8" class="summary-link"><i class="fas fa-route me-2 text-muted"></i> 8. Décarbonation & Stratégie ERC</a>
+                        <a href="#sec-9" class="summary-link"><i class="fas fa-book me-2 text-muted"></i> 9. Glossaire des Acronymes</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenu Détaillé du Guide -->
+            <div class="col-lg-9">
+
+                <!-- SECTION 1 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-1">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-seedling me-2"></i> 1. Origine, Philosophie et Enjeux d'un Bilan Carbone</h2>
+                        
+                        <p class="fs-3 text-muted">
+                            Le <strong>Bilan Carbone®</strong> est un outil de diagnostic développé au début des années 2000 par Jean-Marc Jancovici au sein de l'ADEME (Agence de la Transition Écologique). Il permet à une organisation de quantifier la totalité des gaz à effet de serre (GES) émis par son activité sur une année donnée.
+                        </p>
+
+                        <div class="callout-info mb-4">
+                            <h4 class="text-primary mb-1"><i class="fas fa-quote-left me-2"></i> Le principe cardinal de la gestion environnementale :</h4>
+                            <em>« Ce qui ne se mesure pas ne s'améliore pas. Ce qui s'améliore dépend de la fidélité de la mesure. »</em> — Lord Kelvin.
+                        </div>
+
+                        <h3 class="doc-subtitle">Pourquoi faire un Bilan Carbone aujourd'hui ?</h3>
+                        <div class="row g-3 my-2">
+                            <div class="col-md-6">
+                                <div class="card h-100 bg-light border-0 concept-card p-3">
+                                    <h4 class="text-blue"><i class="fas fa-balance-scale me-2"></i> 1. Exigences Réglementaires</h4>
+                                    <p class="small text-muted mb-0">
+                                        En France, le <strong>BEGES</strong> (Bilan d'Émissions de Gaz à Effet de Serre) est obligatoire pour les entreprises de plus de 500 salariés (250 dans les DOM). En Europe, la directive <strong>CSRD</strong> (Corporate Sustainability Reporting Directive) impose désormais la transparence extra-financière et la publication des Scopes 1, 2 et 3 complets à des milliers de PME et ETI.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 bg-light border-0 concept-card p-3">
+                                    <h4 class="text-green"><i class="fas fa-shield-alt me-2"></i> 2. Résilience Économique</h4>
+                                    <p class="small text-muted mb-0">
+                                        Une entreprise très émettrice est une entreprise hyper-dépendante des énergies fossiles et des chaînes d'approvisionnement lointaines. Mesurer son empreinte permet d'anticiper la hausse des prix des carburants, les quotas carbone et les futures taxes carbone aux frontières (MACF).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 bg-light border-0 concept-card p-3">
+                                    <h4 class="text-orange"><i class="fas fa-handshake me-2"></i> 3. Pression Marché & Clients</h4>
+                                    <p class="small text-muted mb-0">
+                                        Les grands donneurs d'ordre publics et privés conditionnent de plus en plus l'attribution des appels d'offres à la fourniture de bilans carbone détaillés et d'engagements de réduction opposables (achats responsables).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 bg-light border-0 concept-card p-3">
+                                    <h4 class="text-purple"><i class="fas fa-bullseye me-2"></i> 4. Plan de Transition Pragmatique</h4>
+                                    <p class="small text-muted mb-0">
+                                        Sans bilan carbone, une entreprise alloue souvent ses ressources à des actions anecdotiques (ex: gobelets en carton) en passant à côté de ses vrais leviers de décarbonation (fret, flotte automobile, choix de fournisseurs locaux).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-2">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-atom me-2"></i> 2. L'Unité Universelle : Le kgCO₂e et le Pouvoir de Réchauffement Global (PRG)</h2>
+
+                        <p>
+                            Le dioxyde de carbone (CO₂) n'est pas le seul gaz responsable de l'effet de serre d'origine humaine. Le protocole de Kyoto et le GIEC (Groupe d'experts intergouvernemental sur l'évolution du climat) ont identifié <strong>6 grandes familles de gaz à effet de serre</strong>.
+                        </p>
+                        <p>
+                            Pour agréger des gaz de natures chimiques différentes dans un seul et même indicateur comptable, les scientifiques ont inventé l'<strong>Équivalent CO₂ (kgCO₂e ou tCO₂e)</strong> en utilisant le <strong>Pouvoir de Réchauffement Global (PRG)</strong> sur un horizon de 100 ans. Le CO₂ sert d'étalon de référence universel avec un PRG égal à 1.
+                        </p>
+
+                        <div class="table-responsive my-3">
+                            <table class="table table-bordered table-custom table-vcenter">
+                                <thead>
+                                    <tr>
+                                        <th>Gaz à Effet de Serre</th>
+                                        <th>Formule</th>
+                                        <th>Origine Principale dans l'Entreprise</th>
+                                        <th>PRG à 100 ans (GIEC AR6)</th>
+                                        <th>Équivalence Réelle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Dioxyde de Carbone</strong></td>
+                                        <td><code>CO₂</code></td>
+                                        <td>Combustion de carburants (diesel, essence, fioul, gaz naturel)</td>
+                                        <td><span class="badge bg-secondary text-white">1</span></td>
+                                        <td>1 kg émis = <strong>1 kgCO₂e</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Méthane</strong></td>
+                                        <td><code>CH₄</code></td>
+                                        <td>Élevage agricole, fermentation des déchets, fuites de réseaux de gaz</td>
+                                        <td><span class="badge bg-orange text-white">28</span></td>
+                                        <td>1 kg émis = <strong>28 kgCO₂e</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Protoxyde d'Azote</strong></td>
+                                        <td><code>N₂O</code></td>
+                                        <td>Engrais azotés agricoles, combustion à haute température</td>
+                                        <td><span class="badge bg-yellow text-white">265</span></td>
+                                        <td>1 kg émis = <strong>265 kgCO₂e</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Hydrofluorocarbures (HFC)</strong></td>
+                                        <td><code>HFC-134a, etc.</code></td>
+                                        <td>Fuites de climatiseurs, chambres froides, pompes à chaleur</td>
+                                        <td><span class="badge bg-danger text-white">1 430 à 14 800</span></td>
+                                        <td>1 kg de fuite = <strong>1,4 à 14,8 tonnes de CO₂e</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Hexafluorure de Soufre</strong></td>
+                                        <td><code>SF₆</code></td>
+                                        <td>Transformateurs et appareillages électriques haute tension</td>
+                                        <td><span class="badge bg-dark text-white">23 500</span></td>
+                                        <td>1 kg émis = <strong>23,5 tonnes de CO₂e</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout-warning">
+                            <strong><i class="fas fa-exclamation-triangle me-1"></i> Attention aux fuites de fluides frigorigènes (Scope 1) :</strong> 
+                            Une simple recharge de climatisation automobile ou de chambre froide d'un demi-kilo de fluide R404A ou R134a équivaut instantanément aux émissions de plusieurs milliers de kilomètres parcourus en voiture thermique !
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-3">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-layer-group me-2"></i> 3. L'Architecture des 3 Scopes (Périmètres d'Émissions)</h2>
+
+                        <p>
+                            Pour structurer les responsabilités et éviter les doubles comptages à l'échelle planétaire, la méthodologie internationale (GHG Protocol) et la norme ISO 14064 découpent les émissions en trois cercles concentriques :
+                        </p>
+
+                        <!-- Scope 1 -->
+                        <div class="card mb-3 border-danger shadow-none" style="border-left-width: 6px;">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge scope-badge-1 px-3 py-2 fs-4 me-2">Scope 1</span>
+                                    <h3 class="m-0 text-danger">Émissions Directes</h3>
+                                </div>
+                                <p class="text-muted">
+                                    Il s'agit des gaz rejetés directement dans l'atmosphère par des équipements physiquement possédés ou contrôlés par l'entreprise.
+                                </p>
+                                <ul class="mb-2">
+                                    <li><strong>Combustion mobile :</strong> La flotte automobile (véhicules utilitaires, camions, voitures de fonction ou de service roulant au diesel, à l'essence, au superéthanol ou au GPL).</li>
+                                    <li><strong>Combustion fixe :</strong> Chaudières au gaz naturel, au fioul ou au charbon situées dans les bâtiments de l'entreprise.</li>
+                                    <li><strong>Émissions fugitives :</strong> Fuites des installations de climatisation et de réfrigération.</li>
+                                </ul>
+                                <div class="formula-box py-2">
+                                    Émissions Scope 1 = Consommation réelle (Litres ou kWh) × Facteur d'Émission Direct ADEME (kgCO₂e / unité)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scope 2 -->
+                        <div class="card mb-3 border-warning shadow-none" style="border-left-width: 6px;">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge scope-badge-2 px-3 py-2 fs-4 me-2">Scope 2</span>
+                                    <h3 class="m-0 text-warning">Émissions Indirectes Liées à l'Énergie Achetée</h3>
+                                </div>
+                                <p class="text-muted">
+                                    L'entreprise ne rejette pas de fumée sur son site, mais consomme une énergie dont la production a généré des émissions chez le fournisseur d'énergie.
+                                </p>
+                                <ul class="mb-2">
+                                    <li><strong>Électricité :</strong> Consommation des bureaux, serveurs, éclairage et recharges de véhicules électriques (VE).</li>
+                                    <li><strong>Réseaux de chaleur et de froid :</strong> Vapeur urbaine ou eau glacée canalisée.</li>
+                                    <li><em>Distinction réglementaire :</em> 
+                                        <strong>Location-based</strong> (intensité carbone moyenne du réseau électrique national, ~0,052 kgCO₂e/kWh en France grâce au nucléaire et hydraulique, contre ~0,350 en Allemagne ou ~0,700 en Pologne) versus 
+                                        <strong>Market-based</strong> (contrats verts avec Garanties d'Origine).
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Scope 3 -->
+                        <div class="card mb-3 border-primary shadow-none" style="border-left-width: 6px;">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge scope-badge-3 px-3 py-2 fs-4 me-2">Scope 3</span>
+                                    <h3 class="m-0 text-primary">Toutes les Autres Émissions Indirectes de la Chaîne de Valeur</h3>
+                                </div>
+                                <p class="text-muted">
+                                    C'est la partie immergée de l'iceberg : pour la quasi-totalité des entreprises du commerce, de l'agroalimentaire ou des services, le <strong>Scope 3 représente entre 75 % et 95 % de l'empreinte carbone totale</strong>.
+                                </p>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="bg-light p-3 rounded h-100">
+                                            <h5 class="text-primary mb-2"><i class="fas fa-arrow-down me-1"></i> Scope 3 Amont (Fournisseurs)</h5>
+                                            <ul class="small mb-0">
+                                                <li><strong>Catégorie 1 :</strong> Achats de biens et services (fabrication des matières premières, composants, prestations).</li>
+                                                <li><strong>Catégorie 2 :</strong> Immobilisations (ordinateurs, serveurs, machines, amortissement carbone des bâtiments).</li>
+                                                <li><strong>Catégorie 3 :</strong> Extraction, raffinage et transport en amont des carburants et de l'énergie.</li>
+                                                <li><strong>Catégorie 4 :</strong> Fret et transport amont des marchandises depuis les fournisseurs.</li>
+                                                <li><strong>Catégorie 5 :</strong> Déchets d'exploitation générés sur site.</li>
+                                                <li><strong>Catégories 6 & 7 :</strong> Déplacements professionnels et trajets domicile-travail des équipes.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="bg-light p-3 rounded h-100">
+                                            <h5 class="text-primary mb-2"><i class="fas fa-arrow-up me-1"></i> Scope 3 Aval (Clients & Usages)</h5>
+                                            <ul class="small mb-0">
+                                                <li><strong>Catégorie 9 :</strong> Transport et distribution aval vers les clients finaux.</li>
+                                                <li><strong>Catégorie 11 :</strong> Utilisation des produits vendus (ex: l'électricité consommée par une télévision vendue).</li>
+                                                <li><strong>Catégorie 12 :</strong> Fin de vie et recyclage des produits vendus.</li>
+                                                <li><strong>Catégorie 15 :</strong> Investissements et financements (très lourd pour les banques et assurances).</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SECTION 4 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-calculator me-2"></i> 4. Les Deux Approches de Calcul Technique : Physique vs Monétaire</h2>
+
+                        <p>
+                            Pour calculer une émission carbone, il existe fondamentalement deux équations dans la science comptable du climat. Comprendre leur complémentarité est la clé de voûte de toute démarche sérieuse.
+                        </p>
+
+                        <div class="row g-4 my-2">
+                            <div class="col-md-6">
+                                <div class="card border-primary h-100 p-3 bg-light">
+                                    <h4 class="text-primary"><i class="fas fa-balance-scale-right me-2"></i> Méthode 1 : L'Approche Physique (Bottom-up)</h4>
+                                    <p class="small text-muted">
+                                        On mesure une grandeur physique mesurable sur le terrain (litres, kWh, kilomètres, kilogrammes, passagers-kilomètres) que l'on multiplie par un facteur d'émission unitaire.
+                                    </p>
+                                    <div class="formula-box py-2" style="font-size: 0.95rem;">
+                                        Émissions (kgCO₂e) = Donnée d'activité physique × FE physique
+                                    </div>
+                                    <div class="small">
+                                        <strong>Exemple réel :</strong><br>
+                                        • Un camion semi-remorque transporte <strong>8 tonnes</strong> de marchandises sur <strong>350 km</strong>.<br>
+                                        • Trafic = <strong>8 × 350 = 2 800 t.km</strong>.<br>
+                                        • Facteur ADEME semi-remorque 40t = <strong>0,092 kgCO₂e / t.km</strong>.<br>
+                                        • Émissions = <strong>2 800 × 0,092 = 257,6 kgCO₂e</strong>.
+                                    </div>
+                                    <div class="mt-2 text-success small">
+                                        <i class="fas fa-check-circle me-1"></i> <strong>Avantage :</strong> Précision absolue, incertitude faible (5% à 15%).<br>
+                                        <i class="fas fa-times-circle text-danger me-1"></i> <strong>Limite :</strong> Collecte de données fastidieuse, impossible sur des milliers de petites factures.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card border-purple h-100 p-3 bg-light">
+                                    <h4 class="text-purple"><i class="fas fa-euro-sign me-2"></i> Méthode 2 : L'Approche Monétaire (Top-down)</h4>
+                                    <p class="small text-muted">
+                                        On exploite le grand livre comptable de l'entreprise. On multiplie la dépense financière Hors Taxes (€ HT) par un ratio d'émission sectoriel moyen par branche d'activité (code NAF / APE).
+                                    </p>
+                                    <div class="formula-box py-2" style="font-size: 0.95rem;">
+                                        Émissions (kgCO₂e) = Dépense (€ HT) × Ratio Monétaire ADEME (kgCO₂e / k€)
+                                    </div>
+                                    <div class="small">
+                                        <strong>Exemple réel :</strong><br>
+                                        • Achat de <strong>15 000 € HT</strong> de fournitures informatiques.<br>
+                                        • Code NAF 26.20Z (Fabrication d'ordinateurs).<br>
+                                        • Ratio ADEME = <strong>240 kgCO₂e / k€ HT</strong>.<br>
+                                        • Émissions = <strong>15 × 240 = 3 600 kgCO₂e</strong> (soit 3,6 tCO₂e).
+                                    </div>
+                                    <div class="mt-2 text-success small">
+                                        <i class="fas fa-check-circle me-1"></i> <strong>Avantage :</strong> Couvre 100 % des flux d'achats sans trou noir.<br>
+                                        <i class="fas fa-times-circle text-danger me-1"></i> <strong>Limite :</strong> Sensible à l'inflation, incertitude statistique plus élevée (30% à 50%).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="doc-subtitle mt-4">D'où viennent les Ratios Monétaires ? (Les Matrices de Leontief)</h3>
+                        <p class="text-muted">
+                            Les ratios monétaires ne sont pas des estimations arbitraires. Ils sont issus des <strong>Tables d'Entrées-Sorties Symétriques (TES)</strong> de l'INSEE, basées sur la théorie économique du Prix Nobel Wassily Leontief. 
+                            L'INSEE et l'ADEME cartographient l'intégralité des flux financiers entre les 400 branches de l'économie française et croisent ces flux avec les inventaires nationaux d'émissions de gaz à effet de serre (CITEPA). Cela permet d'attribuer à chaque euro dépensé dans une filière (agricole, métallurgique, textile, bancaire...) le contenu carbone moyen qu'il a mobilisé en amont.
+                        </p>
+
+                        <div class="card bg-primary-lt border-primary p-3">
+                            <h4 class="text-primary mb-1"><i class="fas fa-star me-2"></i> L'Architecture Hybride Avancée d'EcoTrace 2</h4>
+                            <p class="mb-0 text-dark">
+                                Pour pallier les limites des deux méthodes, <strong>EcoTrace met en œuvre une double détente hybride</strong> sur le Scope 3 :
+                                <br>
+                                1. <strong>La part "Fabrication / Matières premières"</strong> est estimée par le <strong>ratio monétaire</strong> du code NAF officiel de l'entreprise (ex: 46.31Z pour le commerce de fruits et légumes).
+                                <br>
+                                2. <strong>La part "Transport & Fret"</strong> est calculée physiquement à la volée en croisant le <strong>tonnage réel</strong> de marchandises avec la <strong>distance routière kilométrique exacte</strong> calculée par le moteur OSRM entre l'adresse du fournisseur et votre siège !
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-5">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-database me-2"></i> 5. La Base Empreinte ADEME : Le Référentiel Officiel</h2>
+
+                        <p>
+                            Gérée par l'ADEME, la <strong>Base Empreinte®</strong> (anciennement Base Carbone) est la base de données publique de référence pour la réalisation des bilans d'émissions de gaz à effet de serre en France, reconnue par les auditeurs ISO et l'État.
+                        </p>
+
+                        <h3 class="doc-subtitle">Cycle de Vie Complet : Du Puits à la Roue (Well-to-Wheel)</h3>
+                        <p class="text-muted">
+                            L'une des plus grandes rigueurs du Bilan Carbone réside dans l'analyse de cycle de vie (ACV). Par exemple, pour les carburants routiers :
+                        </p>
+                        <ul>
+                            <li><strong>Émissions directes (Tank-to-Wheel / Du réservoir à la roue) :</strong> La combustion pure du gazole dans les cylindres du moteur (~2,65 kgCO₂e par litre).</li>
+                            <li><strong>Émissions amont (Well-to-Tank / Du puits au réservoir) :</strong> Le forage du pétrole brut en mer, son transport par pétrolier, son raffinage et sa livraison en camion-citerne à la station-service (~0,45 kgCO₂e par litre).</li>
+                            <li><strong>Facteur complet (Well-to-Wheel / Du puits à la roue) :</strong> <strong>2,65 + 0,45 = 3,10 kgCO₂e / litre</strong>.</li>
+                        </ul>
+                        <p>
+                            Dans EcoTrace, tous les facteurs d'émissions paramétrés intègrent systématiquement les cycles de vie complets pour éviter toute sous-estimation trompeuse.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SECTION 6 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-6">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-cogs me-2"></i> 6. Le Pipeline d'Enrichissement Technique d'EcoTrace 2</h2>
+
+                        <p>
+                            Comment une simple ligne de grand livre comptable (ex: <code>"DUPONT SARL, 12500€, 3500kg"</code>) se transforme-t-elle en indicateur RSE auditable ? Voici les 6 étapes de l'algorithme :
+                        </p>
+
+                        <div class="table-responsive my-3">
+                            <table class="table table-bordered table-custom">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 80px;">Étape</th>
+                                        <th style="width: 200px;">Module Technique</th>
+                                        <th>Opération Exécutée</th>
+                                        <th>Résultat Produit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-blue text-white">01</span></td>
+                                        <td><strong>Ingestion CSV</strong></td>
+                                        <td>Lecture, nettoyage UTF-8 et typage des montants (€) et poids (kg).</td>
+                                        <td>Entité brute en attente.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-purple text-white">02</span></td>
+                                        <td><strong>API Open Data Gouv</strong></td>
+                                        <td>Interrogation de <code>recherche-entreprises.api.gouv.fr</code> avec le nom nettoyé.</td>
+                                        <td>SIREN officiel, statut juridique, adresse du siège et code NAF INSEE.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-teal text-white">03</span></td>
+                                        <td><strong>Géocodage Résilient</strong></td>
+                                        <td>Résolution de l'adresse via la BAN (Base Adresse Nationale), OSM Nominatim ou repli centre-ville.</td>
+                                        <td>Coordonnées GPS exactes (Latitude, Longitude).</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-indigo text-white">04</span></td>
+                                        <td><strong>Routeur Routier (OSRM)</strong></td>
+                                        <td>Calcul du trajet réel sur le réseau routier depuis le siège de votre société.</td>
+                                        <td>Kilométrage routier réel (avec repli orthodromique × 1,25).</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-yellow text-white">05</span></td>
+                                        <td><strong>Qualification RSE</strong></td>
+                                        <td>Analyse des labels ESS, Société à mission, secteur Alimentaire et Alliance Locale (&lt;50km).</td>
+                                        <td>Badges de gouvernance territoriale et solidaire.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-green text-white">06</span></td>
+                                        <td><strong>Moteur d'Émissions</strong></td>
+                                        <td>Calcul croisé : <code>(Montant € × Ratio NAF) + (Tonnage × Distance km × FE Fret)</code></td>
+                                        <td>Empreinte CO₂e unitaire consolidée.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 7 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-7">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-tachometer-alt me-2"></i> 7. Les Ratios d'Intensité Carbone et Indicateurs de Pilotage</h2>
+
+                        <p>
+                            Comparer le bilan carbone d'une entreprise d'une année sur l'autre uniquement sur ses émissions brutes (en tCO₂e) est un piège : si votre chiffre d'affaires double, vos émissions globales risquent d'augmenter même si votre efficacité environnementale s'est nettement améliorée !
+                        </p>
+                        <p>
+                            Pour mesurer la performance réelle de décarbonation, EcoTrace met à votre disposition les <strong>indicateurs d'intensité carbone</strong> :
+                        </p>
+
+                        <div class="row g-3 my-2">
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded border h-100">
+                                    <h4 class="text-primary"><i class="fas fa-chart-line me-2"></i> Intensité Carbone Économique</h4>
+                                    <div class="formula-box py-2" style="font-size: 0.95rem;">
+                                        Intensité = Total Émissions (tCO₂e) / Chiffre d'Affaires (M€ HT)
+                                    </div>
+                                    <p class="small text-muted mb-0">
+                                        Indique la quantité de carbone nécessaire pour générer un million d'euros de chiffre d'affaires. Une trajectoire vertueuse consiste à faire baisser ce ratio chaque année (découplage carbone-croissance).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded border h-100">
+                                    <h4 class="text-green"><i class="fas fa-users me-2"></i> Intensité Carbone Humaine</h4>
+                                    <div class="formula-box py-2" style="font-size: 0.95rem;">
+                                        Intensité = Total Émissions (tCO₂e) / Effectif (ETP)
+                                    </div>
+                                    <p class="small text-muted mb-0">
+                                        Rapporte l'empreinte globale au nombre de salariés en Équivalent Temps Plein (ETP). Très utile pour benchmarker votre entreprise par rapport aux standards de votre secteur d'activité.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="doc-subtitle mt-4">La Valeur de l'Ancrage Territorial (Alliance Locale)</h3>
+                        <p class="text-muted">
+                            EcoTrace classe automatiquement vos fournisseurs en 4 alliances géographiques :
+                        </p>
+                        <div class="d-flex flex-wrap gap-2 my-2">
+                            <span class="badge bg-green text-white p-2"><i class="fas fa-map-marker-alt me-1"></i> Alliance Locale (&lt; 50 km)</span>
+                            <span class="badge bg-yellow text-white p-2"><i class="fas fa-map-pin me-1"></i> Régionale (50 à 200 km)</span>
+                            <span class="badge bg-blue text-white p-2"><i class="fas fa-flag me-1"></i> Nationale (&gt; 200 km en France)</span>
+                            <span class="badge bg-purple text-white p-2"><i class="fas fa-plane me-1"></i> Internationale (Hors de France)</span>
+                        </div>
+                        <p class="text-muted small mt-2">
+                            En favorisant des partenaires situés à moins de 50 km, l'entreprise réduit de façon drastique les tonnes-kilomètres de fret tout en renforçant l'économie circulaire locale et la robustesse de sa chaîne logistique.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SECTION 8 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-8">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-route me-2"></i> 8. La Stratégie de Décarbonation : La Doctrine ERC</h2>
+
+                        <p>
+                            Un bilan carbone n'est pas une fin en soi : c'est un point de départ. L'ADEME et les standards internationaux prônent l'application stricte de la séquence <strong>Éviter - Réduire - Compenser (ERC)</strong> :
+                        </p>
+
+                        <div class="card bg-light border-0 p-3 mb-3">
+                            <h4 class="text-danger"><i class="fas fa-ban me-2"></i> 1. ÉVITER (Priorité absolue)</h4>
+                            <p class="small text-muted mb-0">
+                                Supprimer à la source les activités qui émettent du carbone sans valeur ajoutée. 
+                                <em>Exemples :</em> Optimiser les tournées de livraison pour supprimer les kilomètres à vide, remplacer les vols intérieurs courts par le train, prolonger la durée de vie des équipements informatiques de 3 à 5 ans.
+                            </p>
+                        </div>
+
+                        <div class="card bg-light border-0 p-3 mb-3">
+                            <h4 class="text-warning"><i class="fas fa-compress-arrows-alt me-2"></i> 2. RÉDUIRE (Efficacité & Sobriété)</h4>
+                            <p class="small text-muted mb-0">
+                                Quand une activité est indispensable, choisir la technologie ou le fournisseur le moins émetteur.
+                                <em>Exemples :</em> Électrifier la flotte de véhicules commerciaux (Scope 1 &rarr; Scope 2 vertueux), isoler thermiquement les bâtiments, massifier les achats auprès de fournisseurs locaux ou labellisés RSE.
+                            </p>
+                        </div>
+
+                        <div class="card bg-light border-0 p-3">
+                            <h4 class="text-success"><i class="fas fa-tree me-2"></i> 3. CONTRIBUER / COMPENSER (En tout dernier recours)</h4>
+                            <p class="small text-muted mb-0">
+                                Financer des projets certifiés de séquestration de carbone (reforestation Label Bas-Carbone, restauration de tourbières) pour les émissions incompressibles. 
+                                <strong>Règle d'or ADEME :</strong> La compensation ne permet pas de se proclamer "neutre en carbone" ; on parle de <em>contribution à la neutralité planétaire collective</em>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 9 -->
+                <div class="card shadow-sm border-0 doc-section" id="sec-9">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="doc-title text-primary"><i class="fas fa-book me-2"></i> 9. Glossaire Technique & Décryptage des Sigles</h2>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover table-custom">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 160px;">Sigle / Terme</th>
+                                        <th>Signification & Définition Technique</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>ADEME</strong></td>
+                                        <td>Agence de la Transition Écologique. Établissement public français opérateur de l'État pour la transition écologique.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>BEGES</strong></td>
+                                        <td>Bilan d'Émissions de Gaz à Effet de Serre. Cadre réglementaire français obligatoire (Article L. 229-25 du Code de l'environnement).</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CSRD</strong></td>
+                                        <td>Corporate Sustainability Reporting Directive. Directive européenne imposant le reporting standardisé de durabilité (ESG) et du climat.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ETP</strong></td>
+                                        <td>Équivalent Temps Plein. Unité de mesure comptabilisant l'effectif réel des salariés de l'organisation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>FE</strong></td>
+                                        <td>Facteur d'Émission. Coefficient qui convertit une donnée d'activité en masse de CO₂e émise.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>GHG Protocol</strong></td>
+                                        <td>Greenhouse Gas Protocol. Standard international privé de comptabilité carbone le plus répandu au monde.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ISO 14064</strong></td>
+                                        <td>Norme internationale régissant la quantification, la déclaration et l'audit des émissions de GES des organisations.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>NAF / APE</strong></td>
+                                        <td>Nomenclature d'Activités Française / Activité Principale Exercée. Code à 5 caractères (ex: 46.31Z) attribué par l'INSEE à chaque entreprise.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>OSRM</strong></td>
+                                        <td>Open Source Routing Machine. Moteur de calcul d'itinéraire routier mondial ultra-rapide basé sur OpenStreetMap.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>PRG</strong></td>
+                                        <td>Pouvoir de Réchauffement Global. Capacité d'un gaz à réchauffer l'atmosphère par rapport au CO₂ sur 100 ans.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>RSE</strong></td>
+                                        <td>Responsabilité Sociétale des Entreprises. Intégration volontaire des préoccupations sociales et environnementales.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SBTi</strong></td>
+                                        <td>Science Based Targets initiative. Initiative internationale certifiant que les objectifs de réduction d'une entreprise sont alignés sur +1,5°C.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>TES</strong></td>
+                                        <td>Tableau Entrées-Sorties. Modèle macro-économique de Leontief décrivant les échanges intermédiaires entre branches industrielles.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>VUL</strong></td>
+                                        <td>Véhicule Utilitaire Léger (&lt; 3,5 tonnes de PTAC, ex: fourgons, camionnettes).</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>WLTP</strong></td>
+                                        <td>Worldwide Harmonized Light Vehicles Test Procedure. Norme officielle d'homologation des consommations et émissions des véhicules.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

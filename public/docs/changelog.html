@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des versions - EcoTrace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: transparent; }
+        h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
+        .markdown h2 { color: #206bc4; border-bottom: 1px solid #e6e8e9; padding-bottom: 8px; margin-top: 2rem; margin-bottom: 1rem; display: flex; align-items: center; }
+        .markdown pre { background: #2c3e50; color: #ecf0f1; border-radius: 8px; padding: 1rem; overflow-x: auto; font-family: monospace; font-size: 13px; }
+        code { color: #d6336c; font-family: monospace; padding: 2px 4px; background: #fdf2e9; border-radius: 4px; }
+        pre code { background: transparent; padding: 0; color: inherit; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container-fluid py-4">
+        
+        <div class="mb-4 border-bottom pb-2">
+            <h1 class="text-success m-0" style="font-family: 'Fredoka', sans-serif;">
+                <i class="fas fa-history me-2"></i> Historique des versions
+            </h1>
+        </div>
+        
+        <div class="card">
+            <div class="card-body markdown" style="font-size: 1.05rem; line-height: 1.6;">
+
+        <div class="mb-5"><h2>Version 2.4.0 <span class="badge bg-blue-lt ms-2">Septembre 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Référentiel Véhicules :</strong> Le champ "Marque" est désormais une liste déroulante éditable (combobox) suggérant dynamiquement les marques déjà enregistrées, tout en permettant une saisie libre.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Estimation CO2 Magique :</strong> Ajout d'un bouton "Auto" dans le formulaire de véhicule. Il interroge instantanément la base de données officielle de l'ADEME (Car Labelling Open Data) pour extraire la consommation WLTP exacte du véhicule selon sa marque, son modèle et son carburant.</li>
+            <li class="mb-2"><span class="badge bg-blue text-white me-2">Documentation</span> <strong>Guide des Traitements :</strong> Ajout d'un chapitre dédié détaillant le pipeline de traitement, les 4 statuts de qualification et l'ensemble des actions par lot du sous-menu Traitements.</li>
+            <li class="mb-2"><span class="badge bg-purple text-white me-2">Ergonomie</span> <strong>Barre d'outils Scope 3 :</strong> Déplacement des actions d'import (CSV enrichi, surlignage SIREN) et des traitements par lots (Maj Distances, Maj NAF, Validation Auto, Nettoyer & Relancer) directement dans la barre d'outils dédiée du Scope 3, alignée à droite des sous-onglets.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Sélection Rapide des NAF Privilégiés :</strong> Ajout d'un système de sélection par grands secteurs d'activité (Alimentaire & Restauration, Transport, Énergie, BTP, Tech...) permettant de cocher ou filtrer massivement les codes NAF avec badges thématiques et compteur interactif en temps réel.</li>
+            <li class="mb-2"><span class="badge bg-teal text-white me-2">Optimisation</span> <strong>Géocodage Haute Disponibilité & Repli Centre-Ville :</strong> Intégration de l'API Base Adresse Nationale (BAN) officielle en plus d'OpenStreetMap. Si une adresse exacte ou un numéro de rue n'est pas reconnu (ou pollué par des mentions CEDEX/BP), le moteur extrait automatiquement la commune et le code postal pour positionner le point GPS au <strong>centre de la ville</strong>, garantissant ainsi un calcul de distance kilométrique fiable et approché sans statut "Distance inconnue".</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Guide Expert Bilan Carbone :</strong> Création d'une page de référence approfondie vulgarisant avec rigueur les fondements physiques et économiques du Bilan Carbone (équivalence kgCO₂e, PRG des gaz à effet de serre, architecture détaillée des 3 Scopes amont/aval, calcul physique vs monétaire de Leontief, facteurs d'émission Base Empreinte ADEME, indicateurs d'intensité et trajectoires de décarbonation ERC). Accessible depuis le menu principal et la documentation.</li>
+            <li class="mb-2"><span class="badge bg-purple text-white me-2">Ergonomie</span> <strong>Rationalisation du Menu Administrateur :</strong> Remplacement de l'ancien menu unique surchargé par trois menus distincts et thématisés dans la barre supérieure : <em>Documentation</em> (Guides, Historique, Comprendre le Bilan Carbone), <em>Actions Possibles</em> (Gestion Sociétés, Codes NAF, Facteurs ADEME, Référentiel Véhicules) et <em>Administration</em> (Administration BDD, Sauvegarde SQL, Importation SQL, Export CSV, Configuration, Vider la base).</li>
+            <li class="mb-2"><span class="badge bg-purple text-white me-2">Ergonomie</span> <strong>Sous-onglets Scope 1 & 2 :</strong> Structuration de l'onglet Scope 1 & 2 en deux sous-onglets dédiés : <em>Livre de bord des consommations</em> (suivi direct des postes d'émissions fixes et mobiles) et <em>Inventaire de la flotte automobile</em> (gestion du parc roulant, consommations et imports kilométriques).</li>
+            <li class="mb-2"><span class="badge bg-purple text-white me-2">Ergonomie</span> <strong>Sous-onglets Scope 1 & 2 :</strong> Structuration complète de l'onglet Scope 1 & 2 en trois sous-onglets dédiés : <em>Livre de bord des consommations</em> (suivi direct des postes d'émissions fixes et mobiles), <em>Inventaire de la flotte automobile</em> (gestion du parc roulant et imports kilométriques) et <em>Référentiel Véhicules</em> (catalogue des modèles de référence avec estimation magique ADEME intégrée).</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Design</span> <strong>Menu Principal :</strong> Amélioration de la lisibilité du lien "Référentiel véhicules" qui passe en orange pour mieux contraster avec le fond gris.</li>
+        </ul></div>
+
+        <div class="mb-5"><h2>Version 2.3.0 <span class="badge bg-blue-lt ms-2">Septembre 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Rapport Bilan Carbone Automatique :</strong> Module dédié d'édition et d'export du Bilan Carbone officiel consolidant les Scopes 1, 2 et 3 par filiale et par année de reporting, avec indicateurs RSE, répartition graphique et mise en page optimisée pour l'impression / PDF.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Temporalité Scope 3 :</strong> Ajout du champ d'année de reporting sur les imports CSV et les enregistrements afin de compartimenter l'historique des émissions par exercice comptable.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Ergonomie</span> <strong>Sous-onglets Scope 3 :</strong> Refonte complète du module Scope 3 en 4 sous-onglets structurés : Rapprochement, Introuvables, Validées et Ajout Manuel.</li>
+        </ul></div>
+
+<div class="mb-5"><h2>Version 2.2.0 <span class="badge bg-blue-lt ms-2">Septembre 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Émissions Directes (Scope 1 & 2) :</strong> Création d'un livre de bord permettant de saisir les consommations internes de l'entreprise (Combustion Fixe, Mobile, Électricité, Fuites de gaz). EcoTrace gère désormais la totalité de votre Bilan Carbone (Scopes 1, 2 et 3) de manière unifiée.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Base Empreinte ADEME :</strong> Le moteur de calcul monétaire du Scope 3 repose désormais sur une véritable base de données. Vous pouvez paramétrer le Facteur d'Émission officiel de chaque code NAF de l'INSEE pour rendre votre Bilan Carbone certifiable et opposable.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Consolidation des Statistiques :</strong> Les graphiques et cartes du tableau de bord global affichent dorénavant l'empreinte CO2 totale agrégée (Emissions Directes + Achats Rapprochés).</li>
+        </ul></div>
+
+
+    <div class="mb-5"><h2>Version 2.1.0 <span class="badge bg-blue-lt ms-2">Septembre 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Administration de la BDD :</strong> Création d'une interface d'administration permettant de surveiller le poids des tables, le nombre d'enregistrements et de vider les tables en toute sécurité (avec modal personnalisée et auto-réparation des anomalies SIREN).</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Gestion des Codes NAF :</strong> Nouvel écran d'administration (listing complet avec recherche instantanée) permettant de sélectionner des codes NAF privilégiés. Les candidats correspondants sont désormais surlignés en <span class="badge bg-purple-lt">violet</span> dans l'interface de rapprochement.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Validation Automatique :</strong> Ajout d'un outil de traitement par lots permettant de valider instantanément les entités en attente dont le SIREN est déjà connu dans l'historique de l'entreprise.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Fournisseurs Étrangers (Plan B) :</strong> Ajout d'une fonctionnalité "Forcer Saisie Étrangère" dans la modale des introuvables. Elle gère nativement le SIREN "ETRANGER", demande la ville/pays pour calculer les coordonnées GPS (OpenStreetMap) et valide directement l'entité sans quitter l'interface.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Nettoyer & Relancer (Introuvables) :</strong> Ajout d'un traitement massif qui nettoie intelligemment les noms des entreprises (suppression de SARL, SAS, FRANCE, etc.) et relance l'API Gouv.fr pour récupérer les introuvables.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Ergonomie & Navigation :</strong> Refonte de la barre de navigation. Le sélecteur de filiale est désormais intégré aux onglets. Les raccourcis (Changelog, BDD, Codes NAF) sont regroupés proprement dans le menu "Actions & Options".</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Expérience Utilisateur (Erreurs) :</strong> Les brutales alertes d'erreur JavaScript (<code>alert()</code>) lors de problèmes de connexion aux API ont toutes été remplacées par des messages d'erreur fluides intégrés nativement au sein des modales d'attente Tabler.</li>
+        </ul></div>
+
+                
+
+    
+
+    
+    
+
+    <div class="mb-5"><h2>Version 2.0.0 (MVC) <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Architecture MVC :</strong> Refonte intégrale du moteur de l'application vers une architecture Modèle-Vue-Contrôleur (MVC). Séparation stricte de la logique métier (Base de données, API) et de l'affichage (HTML/CSS) pour une maintenabilité, une évolutivité et une sécurité optimales.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Framework Tabler.io :</strong> Intégration complète du framework UI Tabler (basé sur Bootstrap 5). L'interface devient 100% responsive, moderne et pensée pour l'analyse de données (Tableaux de bord, cartes de KPI, alignements paramétrés au pixel).</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Ergonomie Rapprochement (Accordéons) :</strong> La file d'attente des rapprochements a été transformée en un système d'accordéons interactifs. Un seul dossier est ouvert à la fois, réduisant significativement la charge cognitive. Ajout de largeurs de colonnes fixes (<code>table-layout</code>) pour un rendu visuel harmonisé.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Contrôleur API Dédié :</strong> Création d'un <code>ApiController</code> indépendant gérant nativement toutes les requêtes asynchrones (Gouv.fr) avec des retours JSON structurés.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Installation Intelligente :</strong> Le module d'installation crée désormais l'intégralité du schéma de base de données définitif (V2.0.0) en un seul bloc, supprimant le besoin de multiples requêtes de mise à jour (<code>ALTER TABLE</code>) lors des déploiements.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.8 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Qualification de l'origine géographique :</strong> Création d'un nouvel indicateur de proximité (Alliance Locale < 100km, Régionale < 150km, Nationale, Internationale) stocké en base de données. Cet indicateur est évalué automatiquement à l'aide d'un algorithme croisant la distance kilométrique et l'analyse textuelle de l'adresse (détection des pays étrangers et codes postaux).</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Maintenance Origine Géo :</strong> Ajout du bouton "Maj Origines Géo" dans le menu de traitements pour calculer et sauvegarder cet indicateur sur l'intégralité de l'historique existant.</li>
+        </ul></div>
+    
+    <div class="mb-5"><h2>Version 1.6.7 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Ergonomie Menu & GPS :</strong> Le menu d'actions a été restructuré avec des sous-menus latéraux (Imports, Exports, Traitements) fonctionnels. Le badge d'anomalie GPS est désormais cliquable pour recalculer uniquement l'entité ciblée.</li>
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Algorithme de Géocodage :</strong> Intégration d'un système intelligent (<code>geocodeSmarter</code>) qui simplifie automatiquement les adresses complexes (bâtiments, zones industrielles, adresses étrangères) en cas d'échec initial, garantissant une meilleure résolution des distances internationales.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.63 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Ergonomie du Menu Actions :</strong> Restructuration complète du menu déroulant principal. Les outils sont désormais classés dans des sous-menus thématiques (Imports, Exports, Traitements/Maj) qui se déploient en cascade. Cela libère de l'espace visuel et facilite la navigation.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.62 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Ergonomie GPS :</strong> Le badge "Anomalie GPS" affiché sur les entités validées sans distance est désormais interactif. Un simple clic dessus déclenche le géocodage de secours (par ville) pour recalculer la distance manquante sans passer par le menu.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.61 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Ergonomie Rapprochement :</strong> Ajout d'un indicateur d'anomalie visuel (badge rouge) dans l'onglet des entités validées pour identifier instantanément les entreprises dont la distance de transport n'a pas pu être calculée (permettant un traitement rapide via l'outil de Maj des distances).</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.6 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Géocodage de secours (Fallback) :</strong> Si une adresse complète est introuvable par le serveur GPS, le système effectue automatiquement une seconde tentative de localisation en se basant uniquement sur la ville et le code postal (centroïde de commune) afin de garantir qu'une distance de fret soit toujours calculée.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Maintenance GPS :</strong> Ajout d'un outil "Maj Distances (Villes)" permettant de réparer les entités déjà enregistrées dans la base de données qui n'avaient pas de distance (distance à 0 ou NULL).</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.51 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Installation automatisée :</strong> L'assistant d'installation initiale recherche désormais la présence du fichier <code>insee.codenaf.csv</code> à la racine du projet. S'il le trouve, il peuple automatiquement la table de dictionnaire NAF dès la création de la base de données.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.5 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Affichage NAF :</strong> Modification des requêtes SQL d'affichage (Jointures) pour lier dynamiquement les résultats de recherche avec la table du dictionnaire NAF officiel.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Maintenance NAF :</strong> Activation du bouton "Maj NAF" permettant de mettre à jour rétroactivement le libellé de l'ensemble des entreprises déjà présentes dans la base de données.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.4 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Import NAF :</strong> Résolution du bug de permission base de données (remplacement de <code>TRUNCATE</code> par <code>DELETE</code>) qui provoquait l'annulation de l'import CSV sur certains serveurs MySQL. Les messages d'erreurs critiques sont désormais affichés en clair pour faciliter le diagnostic.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.3 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Import NAF (INSEE) :</strong> Mise en place d'un convertisseur d'encodage automatique (Windows-1252 vers UTF-8) pour traiter sans erreur les fichiers CSV officiels de l'INSEE comportant des accents français. Amélioration de la gestion des erreurs réseau et forçage de la création de la table avant l'importation.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.2 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Dictionnaire NAF (INSEE) :</strong> Création d'une table dédiée en base de données pour héberger l'intégralité des codes NAF existants (732 sous-classes).</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Outil d'importation :</strong> Ajout d'une fonctionnalité dans le menu d'actions pour injecter à la volée le fichier CSV officiel de l'INSEE (<code>insee.codenaf.csv</code>).</li>
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Précision des libellés :</strong> L'application affiche désormais le libellé exact au lieu de la grande famille générique si le code NAF est connu dans la nouvelle base.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.1 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Surlignage persistant :</strong> Lors de l'import d'un fichier CSV de numéros SIREN, l'application sauvegarde désormais la correspondance directement dans la base de données. Les candidats "connus" resteront surlignés en vert de manière permanente, même après actualisation de la page.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.6.0 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Outil de rapprochement :</strong> Ajout d'une fonctionnalité permettant d'importer une liste de SIREN (au format CSV). L'application scanne instantanément les candidats proposés dans l'onglet "Rapprochement" et surligne en vert pastel ceux dont le SIREN correspond au fichier, facilitant ainsi la prise de décision.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.5.41 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Secteurs d'activité (NAF) :</strong> Intégration de la nomenclature complète des 88 grandes divisions d'activités de l'INSEE. L'application affiche désormais des libellés précis ("Transports terrestres", "Architecture et ingénierie"...) au lieu du simple message générique "Secteur d'activité".</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.5.4 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Ergonomie de liste :</strong> L'application mémorise désormais votre position de défilement (scroll) lors du traitement ou de la suppression d'une entité. La page ne remonte plus tout en haut après un rechargement.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Onglet Rapprochement :</strong> Ajout d'un bouton de suppression rapide (🗑️) à côté des boutons de recherche d'API, pour écarter rapidement une entité inutile.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Ajout Manuel :</strong> L'utilisateur peut désormais choisir de vérifier l'entreprise via l'API officielle, ou de "forcer" la saisie manuelle directement sans interroger les serveurs de l'État.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.5.3 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Sécurité GitHub :</strong> Retrait du jeton d'accès (Token) codé en dur dans les valeurs par défaut du fichier source pour respecter les standards de sécurité et éviter le blocage des commits par la "Push Protection" de GitHub. Le jeton doit être renseigné exclusivement via l'interface de configuration (.env).</li>
+        </ul></div>
+    
+    <div class="mb-5"><h2>Version 1.5.2 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Auto-Updater :</strong> Mise en place d'un système de sauvegarde en mémoire et de restauration instantanée du fichier <code>.env</code> lors des mises à jour GitHub. Cela empêche la suppression accidentelle des identifiants et l'apparition d'erreurs critiques de base de données.</li>
+        </ul></div>
+    
+    <div class="mb-5"><h2>Version 1.5.1 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Auto-Updater GitHub :</strong> Pré-intégration de l'URL sécurisée du dépôt GitHub (avec token d'accès) dans les paramètres par défaut de l'assistant d'installation pour un déploiement instantané.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.5.0 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Auto-Updater GitHub :</strong> Intégration d'un système de mise à jour "Over-The-Air". L'application peut interroger un dépôt GitHub distant pour vérifier la présence d'une nouvelle version et télécharger les fichiers automatiquement après validation de l'utilisateur.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Configuration Docker :</strong> Modification du port d'écoute externe sur le port 8083 et intégration native du paquet Git dans le conteneur.</li>
+        </ul></div>
+    
+    <div class="mb-5"><h2>Version 1.4.4 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Fenêtres Modales :</strong> Suppression du titre redondant dans la fenêtre d'affichage des documents (Documentation, Licence, Historique) afin de maximiser l'espace d'affichage de l'iframe.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.4.3 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Interface utilisateur :</strong> L'affichage de la Documentation, de la Licence, de la Présentation et de l'Historique s'effectue désormais dans des fenêtres modales intégrées (via iframe) plutôt que dans de nouveaux onglets, améliorant ainsi la fluidité de navigation sans quitter l'application.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.4.2 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Onglet Introuvables :</strong> Ajout d'un bouton de suppression rapide (🗑️) à côté du bouton "Gérer" pour permettre de nettoyer les requêtes échouées sans devoir les valider au préalable.</li>
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Lien Societe.com :</strong> Correction de l'erreur 404 lors du clic sur le bouton "Fiche Societe.com" depuis la modale d'analyse du risque. Le lien utilise désormais le moteur de redirection officiel par SIREN.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.4.1 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Moteur de recherche Societe.com :</strong> Ajout du bouton manquant "Societe.com" dans les interfaces de rapprochement et de gestion des introuvables. L'application est désormais capable d'interroger directement cette API pour rechercher des entreprises.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.4.0 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Analyse du risque interactive :</strong> Les badges de santé juridique sont désormais cliquables. L'ouverture d'une modale affiche le détail officiel de la dernière annonce légale (date, tribunal, détails) avec liens directs vers BODACC et Societe.com.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Support API Societe.com :</strong> Ajout du champ de clé API Societe.com dans l'éditeur de configuration `.env`.</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Mise à jour de la documentation et de la présentation :</strong> Actualisation globale de `doc.html` et `presentation.html` pour couvrir l'ensemble des fonctionnalités RSE, CO2 Scope 3, Dumps SQL et API.</li>
+        </ul></div> 
+
+    <div class="mb-5"><h2>Version 1.3.1 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Interface d'enrichissement :</strong> Réalignement esthétique du formulaire d'enrichissement des données (Montant et Poids). Les libellés ont désormais une largeur fixe pour garantir un alignement vertical parfait des champs de saisie.</li>
+        </ul></div>
+    
+    <div class="mb-5"><h2>Version 1.3.0 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Éditeur de configuration :</strong> Ajout d'une option dans le menu pour modifier les paramètres vitaux de l'application (Identifiants de base de données, Mots de passe, Clé API Pappers, Coordonnées GPS) sans avoir à réinstaller le logiciel.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Enrichissement des données :</strong> Ajout d'un bouton "✏️ Enrichir" dans l'onglet des entités Validées. Il permet d'ajouter ou de modifier manuellement le montant des achats (€) ou le poids (kg) d'une entreprise pour affiner dynamiquement son estimation CO2.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.2.2 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Menu d'actions :</strong> Restauration des boutons de maintenance (Maj GPS, NAF, Alimentaire, Santé) et de l'option de réinstallation complète qui avaient disparu du menu déroulant.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.2.1 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-red text-white me-2">Correction</span> <strong>Affichage Footer :</strong> Résolution du bug de dimensionnement massif et de superposition des logos vectoriels de la communauté Open Source dans le pied de page.</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.2.0 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Calculateur Carbone (Scope 3) :</strong> L'application calcule désormais les émissions de CO2 estimées en se basant sur le code NAF (ratio monétaire) et sur le calcul Fret (Tonne-Kilomètre).</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Import enrichi :</strong> Le fichier CSV peut désormais contenir 3 colonnes (Nom, Montant en euros, Poids en kg) pour affiner les calculs.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Détection RSE :</strong> Identification automatique des structures de l'ESS (Économie Sociale et Solidaire) et des Sociétés à mission via les API.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Tableau de Bord :</strong> Création de l'onglet "Statistiques RSE" incluant une cartographie mondiale des partenaires et des graphiques interactifs (Chart.js).</li>
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Refonte du tableau Validées :</strong> Regroupement des indicateurs (Alimentaire, ESS, Mission) dans une colonne unifiée "Labels RSE".</li>
+        </ul></div>
+
+    <div class="mb-5"><h2>Version 1.1.1 <span class="badge bg-blue-lt ms-2">Août 2026</span></h2>
+        <ul class="list-unstyled mt-3">
+            <li class="mb-2"><span class="badge bg-orange text-white me-2">Optimisation</span> <strong>Indicateur de Santé :</strong> Déplacement du badge de statut juridique (Actif/Fermé...) directement à côté du nom de l'entreprise.</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Sauvegarde SQL :</strong> Export complet de la base de données (structure et données).</li>
+            <li class="mb-2"><span class="badge bg-green text-white me-2">Nouveauté</span> <strong>Restauration SQL :</strong> Import direct d'un fichier dump (.sql) généré par l'application.</li>
+        </ul></div>
+
+
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Configuration d'environnement sensible
+.env
+
+# Scripts de test et utilitaires de migration ponctuels
+fix_*.php
+fix_*.py
+test_*.php
+plan_*.md
+
+# Fichiers temporaires et logs
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

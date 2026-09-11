@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - EcoTrace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Transparent background so it blends with the parent tab content */
+        body { font-family: 'Nunito', sans-serif; background-color: transparent; }
+        h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
+        .markdown ul { padding-left: 1.5rem; }
+        .markdown li { margin-bottom: 0.5rem; }
+        .markdown pre { background: #2c3e50; color: #ecf0f1; border-radius: 8px; padding: 1rem; overflow-x: auto; font-family: monospace; font-size: 13px; }
+        code { color: #d6336c; font-family: monospace; padding: 2px 4px; background: #fdf2e9; border-radius: 4px; }
+        pre code { background: transparent; padding: 0; color: inherit; }
+        .markdown h2 { color: #206bc4; border-bottom: 1px solid #e6e8e9; padding-bottom: 8px; margin-top: 2rem; margin-bottom: 1rem; }
+        .markdown h3 { color: #4299e1; margin-top: 1.5rem; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container-fluid py-4">
+        
+        <div class="mb-4 border-bottom pb-2">
+            <h1 class="text-success m-0" style="font-family: 'Fredoka', sans-serif;">
+                <i class="fas fa-book-open me-2"></i> Documentation Technique et Utilisateur
+            </h1>
+        </div>
+        
+        <div class="card">
+            <div class="card-body markdown" style="font-size: 1.05rem; line-height: 1.6;">
+                
+
+    
+
+    
+
+    <div class="d-flex flex-wrap gap-2 mb-4 p-3 bg-light rounded border"><div><strong>Projet :</strong> <span class="text-muted">Moteur de qualification RSE, calcul d'empreinte carbone Scope 3 et analyse du risque</span></div><div><strong>Version :</strong> <span class="text-muted">2.4.0 (Septembre 2026)</span></div><div><strong>Environnement :</strong> <span class="text-muted">Docker / ZimaOS / LAMP (PHP 8.2, Apache, MySQL 8.0)</span></div><div><strong>Architecture :</strong> <span class="text-muted">Modèle-Vue-Contrôleur (MVC) / UI Tabler.io</span></div></div>
+
+    <div class="alert alert-success d-flex align-items-center mb-4 p-3 shadow-sm border-0" style="background: linear-gradient(135deg, #e6fcf5 0%, #c3fae8 100%);">
+        <i class="fas fa-globe-americas fa-2x text-teal me-3"></i>
+        <div>
+            <h4 class="m-0 text-teal fw-bold">Guide Expert : Comprendre le Bilan Carbone</h4>
+            <p class="m-0 text-dark small">Consultez notre guide exhaustif sur les principes scientifiques, l'architecture des 3 Scopes et les méthodes de calcul (physiques et monétaires) : <a href="bilan_carbone_guide.html" target="_blank" class="fw-bold text-teal text-decoration-underline">Ouvrir le Guide Bilan Carbone &rarr;</a></p>
+        </div>
+    </div>
+
+    <h2>1. Présentation Générale</h2>
+    <p><strong>EcoTrace 🍃</strong> est une application web interne conçue pour automatiser le rapprochement d'entités (fournisseurs, clients, partenaires), qualifier les bases de données et estimer l'empreinte carbone (Scope 3) ainsi que le niveau de risque financier de la chaîne de valeur.</p>
+    <ul>
+        <li>Importation de fichiers CSV (Nom seul, ou enrichi avec Montants € et Poids kg).</li>
+        <li>Interrogation d'API officielles et privées (Gouv.fr, OpenData BODACC).</li>
+        <li>Calcul automatique du kilométrage routier (OSRM) et géocodage mondial avec <strong>algorithme intelligent de secours</strong> pour les adresses complexes ou étrangères (OpenStreetMap).</li>
+        <li>Détection des labels RSE : Secteur Alimentaire, ESS (Économie Sociale et Solidaire), Société à Mission.</li>
+        <li>Intégration du dictionnaire officiel de l'INSEE pour une précision absolue des secteurs d'activité (NAF).</li>
+        <li>Calculateur d'émissions de CO2 estimées (Ratios monétaires par secteur + Fret Tonnes-Kilomètres).</li>
+        <li><strong>Bilan Carbone Complet (Scope 1, 2, 3) :</strong> Livre de bord pour les émissions directes (véhicules, chauffage) et intégration de la Base Empreinte ADEME.</li>
+        <li><strong>Administration avancée :</strong> Gestion des facteurs d'émission personnalisés, des privilèges de codes NAF, et nettoyage intelligent des bases de données.</li>
+        <li>Module d'analyse du risque financier avec modale interactive d'affichage des annonces légales BODACC.</li>
+        <li>Outils de traitement de masse organisés par <strong>sous-menus</strong> (Surlignage de SIREN, Maj GPS, Maj NAF...).</li>
+        <li>Mise à jour "Over-The-Air" (Auto-Updater) via synchronisation avec un dépôt GitHub.</li>
+        <li>Dashboard RSE interactif avec cartes mondiales (Leaflet) et graphiques analytiques (Chart.js).</li>
+    </ul>
+
+    <h2>2. Configuration et Clés API (<code>.env</code>)</h2>
+    <p>L'application est entièrement paramétrable via son assistant graphique ou le bouton <code>⚙️ Éditer la configuration</code> du menu d'actions :</p>
+    <ul>
+        <li><code>DB_HOST</code>, <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASS</code> : Connexion MySQL.</li>
+        <li><code>ADMIN_USER</code>, <code>ADMIN_PASS</code> : Identifiants administrateur EcoTrace.</li>
+        <li><code>ORIGIN_LAT</code>, <code>ORIGIN_LON</code> : Coordonnées GPS du siège/entrepôt d'origine.</li>
+        <li><code>GITHUB_REPO</code> : URL du dépôt pour les mises à jour automatiques (voir Section 7).</li>
+    </ul>
+
+    <h2>3. Analyse du Risque et Modale BODACC</h2>
+    <p>Lors de chaque qualification, EcoTrace scanne la base du BODACC. Si l'entreprise est en <strong>Redressement, Liquidation, Sauvegarde ou En difficulté</strong>, un badge d'avertissement de couleur s'affiche à côté de son nom.</p>
+    <p>En cliquant directement sur ce badge de santé juridique, une fenêtre modale s'ouvre et affiche le texte officiel de la dernière publication au journal officiel (Tribunal, Date, Motif) ainsi que des liens d'accès direct aux fiches officielles BODACC.fr et Societe.com.</p>
+
+    <h2>4. Bilan Carbone Complet (Scope 1, 2 et 3)</h2>
+    <p>EcoTrace offre une architecture modulaire unifiée couvrant l'intégralité de l'empreinte environnementale de l'entreprise :</p>
+    
+    <h3>4.1. Émissions Directes et Énergie (Scope 1 & 2)</h3>
+    <p>L'onglet <strong>Scope 1 & 2</strong> est découpé en trois sous-onglets fonctionnels :</p>
+    <ul>
+        <li><strong>📋 Livre de bord des consommations :</strong> Enregistrement des flux énergétiques propres (combustion fixe fioul/gaz, électricité réseau, fluides frigorigènes des climatiseurs, combustion mobile). Les calculs croisent directement les quantités déclarées avec les ratios officiels de la Base Empreinte ADEME.</li>
+        <li><strong>🚗 Inventaire de la flotte automobile :</strong> Gestion du parc roulant réel (immatriculations, marques, modèles, carburants, statuts et kilométrages annuels) permettant de calculer les émissions des déplacements professionnels de l'entreprise.</li>
+        <li><strong>📖 Référentiel Véhicules :</strong> Catalogue de référence des véhicules du marché avec liste déroulante dynamique des marques et bouton magique <strong>🪄 Auto</strong> interrogeant l'API officielle ADEME Car Labelling pour obtenir la consommation WLTP exacte.</li>
+    </ul>
+
+    <h3>4.2. Émissions Indirectes de la Chaîne de Valeur (Scope 3)</h3>
+    <p>Le <strong>Scope 3</strong> adopte la même organisation modulaire pérenne en trois sous-onglets :</p>
+    <ul>
+        <li><strong>📋 Livre de bord des Achats & Fret :</strong> Journal des flux de dépenses et de transport. Permet de filtrer instantanément par <strong>exercice comptable (2024, 2025, 2026...)</strong> avec calcul immédiat des 4 KPIs d'exercice (Dépenses totales, Tonnage Fret, Émissions tCO₂e, Taux d'achats locaux &lt; 50km). Une dépense peut être ajoutée directement en la rattachant à un fournisseur déjà qualifié dans l'inventaire.</li>
+        <li><strong>🔒 Deuxième barre d'outils (Clôture &amp; Import SIREN) :</strong> Située sous la barre d'exercice, elle affiche en temps réel l'état d'ouverture ou de clôture de l'exercice affiché (avec date de clôture), permet de verrouiller/déverrouiller l'exercice en un clic, et propose un bouton d'importation CSV rapide 3 colonnes (SIREN, Montant, Tonnage) avec barre de progression en temps réel, <strong>pré-agrégation automatique par SIREN</strong> (consolidation des factures multiples) et support universel des formats de nombres (espaces insécables, séparateurs de milliers). Lorsqu'un exercice est clôturé, toutes les actions d'écriture (ajouts, modifications, suppressions) sont automatiquement sécurisées et bloquées pour la conformité audit.</li>
+        <li><strong>🏢 Inventaire & Qualification des Sociétés :</strong> Annuaire permanent des partenaires certifiés. Conserve le workflow complet de qualification : <em>Sociétés Validées</em> (le carnet d'adresses qualifié), <em>Rapprochement</em> (fournisseurs homonymes en attente de choix), <em>Introuvables</em> (à corriger) et <em>Ajout Manuel</em>. Une barre d'outils dédiée regroupe les actions d'<strong>Imports</strong> et de <strong>Traitements</strong> par lots.</li>
+        <li><strong>🏷️ Gestion des Codes NAF intégrée :</strong> Référentiel complet des codes d'activité de l'INSEE avec sélecteur rapide par grands secteurs (Alimentaire, Transport, Énergie, BTP, Numérique, Industrie, Services) et boutons de sélection en un clic.</li>
+    </ul>
+
+    <h3>4.3. Méthodologie de Calcul des Émissions Scope 3</h3>
+    <p>L'estimation des émissions du Scope 3 repose sur la méthodologie officielle recommandée par l'<strong>ADEME</strong> et le <strong>GHG Protocol</strong>, combinant deux approches complémentaires :</p>
+
+    <h4>A. L'approche physique : Le Fret Routier</h4>
+    <p>Si un poids (en kg) est renseigné, EcoTrace le croise avec la distance routière calculée :</p>
+    <ul>
+        <li><strong>Unité d'activité (Tonne-Kilomètre) :</strong> Poids converti en tonnes multiplié par les kilomètres routiers réels (<code>t.km</code>).</li>
+        <li><strong>Facteur d'émission :</strong> Ratio moyen de <strong>0,1 kgCO₂e par t.km</strong> (représentant un transport routier lourd standard).</li>
+    </ul>
+
+    <h4>B. L'approche monétaire : Les Dépenses d'Achats</h4>
+    <p>Si un montant (€ HT) est renseigné, EcoTrace applique les <em>Facteurs d'Émissions Monétaires (FEM)</em> de la Base Empreinte ADEME selon le code NAF officiel de l'entreprise :</p>
+    <ul>
+        <li><strong>Transport lourd (NAF 49 à 52) :</strong> 0,80 kgCO₂e / € <em>(Carburants et énergie de traction)</em>.</li>
+        <li><strong>Alimentaire & Restauration (NAF 10, 11, 56) :</strong> 0,45 kgCO₂e / € <em>(Empreinte agricole et agroalimentaire)</em>.</li>
+        <li><strong>Services & Conseil (NAF 61 à 63, 69 à 71) :</strong> 0,05 kgCO₂e / € <em>(Prestations intellectuelles, numérique)</em>.</li>
+        <li><strong>Par défaut (Autres secteurs) :</strong> 0,20 kgCO₂e / € <em>(Moyenne macro-économique)</em>.</li>
+    </ul>
+    
+    <div class="alert alert-info" role="alert"><div class="d-flex"><div><i class="fas fa-info-circle icon alert-icon"></i></div><div><h4 class="alert-title">Réutilisation Pérenne à l'Import </h4><div class="text-secondary">Lorsqu'un nouveau fichier CSV comptable annuel est importé, EcoTrace détecte automatiquement les tiers déjà qualifiés dans votre inventaire permanent. Ces dépenses sont <strong>immédiatement rattachées et validées</strong> sans repasser par l'étape de rapprochement !</div></div></div></div>
+
+    <h2>5. Modèle de Données et Sauvegardes</h2>
+    <p>La base de données relationnelle d'EcoTrace est structurée autour de 9 tables complémentaires :</p>
+    <div class="table-responsive mb-3">
+        <table class="table table-sm table-bordered">
+            <thead class="bg-light">
+                <tr><th>Table</th><th>Rôle fonctionnel</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>societes</code></td><td>Entités juridiques de l'entreprise (siège, filiales) avec leurs coordonnées GPS d'origine.</td></tr>
+                <tr><td><code>sources_csv</code></td><td>Lignes de dépenses comptables et de fret (flux annuels avec champ <code>annee</code>).</td></tr>
+                <tr><td><code>api_resultats</code></td><td>Répertoire permanent des fournisseurs qualifiés (SIREN, NAF, GPS, distance, labels RSE, santé BODACC).</td></tr>
+                <tr><td><code>codes_naf</code></td><td>Nomenclature officielle INSEE (code, libellé, statut privilégié surligné en violet).</td></tr>
+                <tr><td><code>ademe_facteurs</code></td><td>Facteurs d'émissions monétaires personnalisables par code NAF.</td></tr>
+                <tr><td><code>referentiel_vehicules</code></td><td>Catalogue de modèles de référence (marque, modèle, carburant, consommation WLTP).</td></tr>
+                <tr><td><code>flotte_vehicules</code></td><td>Inventaire du parc automobile affecté aux sociétés.</td></tr>
+                <tr><td><code>scope1_emissions</code></td><td>Consommations directes d'énergie et de fluides frigorigènes (Scope 1 & 2).</td></tr>
+                <tr><td><code>siren_connus</code></td><td>Registre des numéros SIREN reconnus automatiquement lors des imports.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <ul>
+        <li><strong>Sauvegarde (Export SQL) :</strong> Le menu <code>Administration > Sauvegarde SQL</code> génère à tout moment un dump complet prêt à être réimporté.</li>
+        <li><strong>Restauration (Import SQL) :</strong> Le menu <code>Administration > Importation SQL</code> permet d'injecter une sauvegarde sur n'importe quel environnement.</li>
+        <li><strong>Exportation Validée CSV :</strong> Le menu <code>Administration > Exportation validée CSV</code> permet d'exporter la liste propre et enrichie des fournisseurs pour vos outils tiers.</li>
+    </ul>
+
+    <h2>6. Guide d'Installation de Zéro &amp; Test à Blanc</h2>
+    <p>EcoTrace 🍃 est conçu pour être 100% autonome. Lors du premier déploiement ou après une réinitialisation, l'application déclenche automatiquement son assistant d'installation :</p>
+
+    <div class="alert alert-success" role="alert"><div class="d-flex"><div><i class="fas fa-check-circle icon alert-icon"></i></div><div><h4 class="alert-title">Initialisation Automatique </h4><div class="text-secondary">Au premier lancement, le moteur génère automatiquement les 9 tables, crée la société par défaut, insère les véhicules de référence de démonstration, importe le dictionnaire INSEE (<code>insee.codenaf.csv</code>) et calibre les ratios ADEME par défaut.</div></div></div></div>
+
+    <h3>Procédure de Test d'Installation à Blanc :</h3>
+    <ol>
+        <li><strong>Option 1 (Vider les données sans toucher aux référentiels) :</strong> Ouvrez le menu <code>Administration > Vider la base de données</code>. Cette action supprime toutes les dépenses, rapprochements et émissions saisies, tout en conservant vos sociétés, le dictionnaire NAF et le référentiel véhicules.</li>
+        <li><strong>Option 2 (Installation complète de zéro) :</strong> Si vous supprimez votre base MySQL ou toutes les tables, pointez votre navigateur sur la racine du site. L'assistant <code>/install</code> s'affichera immédiatement pour configurer la connexion MySQL, créer l'utilisateur administrateur et générer la base complète.</li>
+    </ol>
+
+    <h3>Installation via Docker &amp; ZimaOS :</h3>
+<pre><code>name: ecotrace
+services:
+  web:
+    image: php:8.2-apache
+    container_name: ecotrace_web
+    restart: always
+    ports:
+      - "8083:80"
+    volumes:
+      - /DATA/AppData/ecotrace:/var/www/html
+    command: >
+      /bin/bash -c "apt-get update &&
+      apt-get install -y git &&
+      docker-php-ext-install pdo pdo_mysql &&
+      git config --system --add safe.directory '*' &&
+      chown -R www-data:www-data /var/www/html &&
+      apache2-foreground"
+    depends_on:
+      - db
+  
+  db:
+    image: mysql:8.0
+    container_name: ecotrace_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "VotreMotDePasseSecret!"
+      MYSQL_DATABASE: "ecotrace"
+    volumes:
+      - ecotrace_db_data:/var/lib/mysql
+
+volumes:
+  ecotrace_db_data:
+    driver: local</code></pre>
+
+    <h2>7. Mises à jour automatiques et Token GitHub</h2>
+    <p>EcoTrace intègre un système "Auto-Updater" qui lui permet de s'auto-mettre à jour en un clic via GitHub. Étant donné que le dépôt est privé, il est nécessaire de générer un <strong>Personal Access Token (PAT)</strong> sur GitHub pour autoriser EcoTrace à s'y connecter en silence.</p>
+    
+    <div class="alert alert-warning" role="alert"><div class="d-flex"><div><i class="fas fa-exclamation-triangle icon alert-icon"></i></div><div><h4 class="alert-title">Règle de Sécurité Absolue </h4><div class="text-secondary">Le jeton secret ne doit <strong>jamais</strong> être écrit dans le code source de l'application (sous peine d'être bloqué par la sécurité de GitHub). Il doit être inséré uniquement via l'interface de configuration d'EcoTrace, qui le stockera dans le fichier local caché <code>.env</code>.</div></div></div></div>
+
+    <h3>Étape 1 : Générer le Jeton (Token) sur GitHub</h3>
+    <ol>
+        <li>Connectez-vous sur GitHub et allez dans <strong>Settings (Paramètres)</strong> > <strong>Developer settings</strong>.</li>
+        <li>Déroulez <strong>Personal access tokens</strong> et choisissez <strong>Tokens (classic)</strong>.</li>
+        <li>Cliquez sur <strong>Generate new token (classic)</strong> avec <code>No expiration</code> et cochez <u>uniquement</u> la case <strong><code>repo</code></strong>.</li>
+        <li><strong>Copiez immédiatement</strong> le jeton généré (ex: <code>ghp_A1b2C3d4...</code>).</li>
+    </ol>
+
+    <h3>Étape 2 : Configurer le lien dans EcoTrace</h3>
+    <p>L'URL standard de votre dépôt ressemble à :<br><code>https://github.com/votre-compte/ecotrace.git</code></p>
+    <p>Ajoutez votre jeton suivi d'un <code>@</code> juste avant <code>github.com</code> :<br>
+    <code style="word-break: break-all;">https://ghp_A1b2C3d4...@github.com/votre-compte/ecotrace.git</code></p>
+    <p>Ouvrez le menu <strong>⚙️ Actions ▾</strong> d'EcoTrace, cliquez sur <strong>⚙️ Éditer la configuration</strong>, et collez cette URL dans le champ dédié.</p>
+
+    <h2>8. Outils de Rapprochement, Navigation et Ergonomie</h2>
+    
+    <h3>A. Navigation Supérieure Rationalisée</h3>
+    <p>Pour une clarté optimale, les outils d'administration et de pilotage sont regroupés en 3 menus déroulants thématiques dans la barre supérieure :</p>
+    <ul>
+        <li><strong>📚 Documentation :</strong> Guide Technique complet, Guide Expert <em>Comprendre le Bilan Carbone</em>, et Historique des versions (Changelog).</li>
+        <li><strong>⚡ Actions Possibles :</strong> Gestion multi-sociétés (filiales), Gestion des Codes NAF et Facteurs d'émission ADEME personnalisés.</li>
+        <li><strong>🛠️ Administration :</strong> Interface d'administration MySQL, Sauvegarde et Importation de dumps SQL, Export CSV enrichi, Édition de la configuration système (<code>.env</code>) et Vider la base de données pour repartir à zéro.</li>
+    </ul>
+
+    <h3>B. Barre d'outils Scope 3</h3>
+    <p>Dans l'onglet <strong>Scope 3</strong>, une barre d'outils dédiée est alignée directement avec les sous-onglets :</p>
+    <ul>
+        <li><strong>Menu déroulant Imports :</strong> <em>Importer CSV enrichi</em> et <em>Surligner via SIREN</em>.</li>
+        <li><strong>Menu déroulant Traitements :</strong> <em>Maj Distances (Villes)</em>, <em>Maj NAF (INSEE)</em>, <em>Validation Auto (Siren connus)</em>, <em>Relancer les Introuvables</em>, <em>Repasser en attente</em> et <em>Nettoyer &amp; Relancer</em> (avec boutons d'aide <code>?</code> interactifs expliquant chaque traitement).</li>
+    </ul>
+
+    <h3>C. Maintien de la position de navigation (Scroll)</h3>
+    <p>Lorsque vous traitez une entreprise (validation, recherche unitaire, suppression), l'application sauvegarde instantanément votre position de défilement verticale. Au rechargement, vous êtes replacé exactement au même endroit, ce qui est idéal pour ne pas perdre sa progression dans les longues listes.</p>
+    
+    <h3>D. Suppression rapide d'une requête (🗑️)</h3>
+    <p>Dans l'onglet "Rapprochement", un bouton rouge <strong>Corbeille</strong> (🗑️) est disponible pour écarter et supprimer définitivement de la base de données une ligne importée par erreur ou inutile.</p>
+
+    <h3>E. Surlignage via SIREN (Fichier CSV)</h3>
+    <p>Le bouton <strong>✨ Surligner via SIREN (CSV)</strong> (dans le sous-menu Imports) permet d'importer une liste de numéros SIREN de partenaires connus. L'application mettra en évidence (fond vert) les candidats correspondants dans la file d'attente et mémorisera cette information en base de données pour les futurs rapprochements.</p>
+
+    <h3>F. Contournement de l'API (Saisie manuelle directe)</h3>
+    <p>Dans l'onglet "➕ Ajout Manuel", vous pouvez utiliser le bouton <strong>✏️ Saisie manuelle directe</strong> pour forcer l'affichage du formulaire et créer une entité sans interroger l'API Gouv.fr (très utile pour les associations non déclarées ou les partenaires étrangers introuvables via SIREN).</p>
+
+    <h3>G. Géocodage Intelligent et Badge d'Anomalie (⚠️)</h3>
+    <p>Si l'adresse précise (bâtiment, zone industrielle ou format étranger) d'un fournisseur n'est pas reconnue par le routeur GPS (OSRM), EcoTrace utilise un <strong>Algorithme intelligent (GeocodeSmarter)</strong> combiné à l'API Base Adresse Nationale (BAN). Il va simplifier l'adresse (en extrayant le Code Postal + Ville, la fin de la phrase ou le nom du pays) pour garantir qu'une distance de fret soit toujours trouvée.</p>
+    <p>Dans l'onglet des entités Validées, si une entité ne possède pas de distance, un badge <strong>⚠️ Anomalie GPS</strong> s'affiche en rouge. <strong>Ce badge est cliquable</strong> : en appuyant dessus, EcoTrace tentera de relancer le calcul de géolocalisation pour cette seule entité de manière transparente.</p>
+    <p>Pour un traitement de masse, vous pouvez utiliser le bouton <strong>🌐 Maj Distances (Villes)</strong> dans le sous-menu "Traitements" qui traitera les anomalies par paquets de 25 entités.</p>
+
+    <h3>H. Gestion du Dictionnaire NAF</h3>
+    <p>EcoTrace utilise une table dédiée pour stocker la nomenclature officielle de l'INSEE. Si le fichier n'a pas été importé à l'installation, vous pouvez l'injecter via le bouton <strong>📚 Importer Dictionnaire NAF (CSV)</strong>. Ensuite, un clic sur <strong>📚 Maj NAF</strong> (dans Traitements) mettra à jour tous les libellés des entreprises de votre historique pour qu'ils soient conformes à l'INSEE.</p>
+
+    <h2>9. Explication des Traitements et Cycles de Données</h2>
+    <p>Cette section détaille le fonctionnement interne des différents traitements automatisés et manuels effectués par EcoTrace lors de l'intégration et de la qualification des données.</p>
+
+    <h3>9.1. Le Pipeline de Traitement Automatique</h3>
+    <p>Lorsqu'une entité est importée (via fichier CSV ou via le formulaire "Recherche API Open Data"), elle traverse automatiquement un pipeline d'enrichissement en plusieurs étapes :</p>
+    <ol>
+        <li><strong>Interrogation Open Data Gouv.fr :</strong> EcoTrace formule une requête sécurisée vers l'API nationale <code>recherche-entreprises.api.gouv.fr</code> pour retrouver le SIREN, la raison sociale officielle, le code d'activité (NAF) et l'adresse du siège.</li>
+        <li><strong>Géocodage & Coordonnées GPS :</strong> Si l'API ne fournit pas directement la latitude et la longitude, le moteur <em>GeocodeSmarter</em> prend le relais pour convertir l'adresse textuelle en coordonnées GPS.</li>
+        <li><strong>Calcul de Distance Routière (OSRM) :</strong> À partir des coordonnées du siège de votre société (point d'origine) et de celles du partenaire, le système interroge le routeur OpenStreetMap (OSRM) pour déterminer la distance kilométrique réelle. Si le réseau routier n'est pas joignable, une distance à vol d'oiseau est calculée en secours.</li>
+        <li><strong>Qualification RSE et Santé Juridique :</strong> Le système détecte automatiquement si l'entreprise est une structure de l'ESS (Économie Sociale et Solidaire), une Société à Mission, si son activité relève du secteur alimentaire, et analyse son statut juridique (Actif, Fermée ou Procédure Collective au BODACC).</li>
+        <li><strong>Vérification des SIREN Connus :</strong> Le SIREN est confronté à la table <code>siren_connus</code>. S'il correspond à un partenaire récurrent déjà identifié, il est immédiatement marqué comme "Connu" (surligné en vert).</li>
+        <li><strong>Calcul de l'Empreinte Carbone (Scope 3) :</strong> Croisement immédiat du montant dépensé (€) avec le ratio monétaire du code NAF et du poids transporté (kg) avec la distance routière.</li>
+    </ol>
+
+    <h3>9.2. Les Statuts de Traitement</h3>
+    <p>À l'issue de la recherche API, chaque ligne se voit attribuer un statut précis dans l'application :</p>
+    <ul>
+        <li><span class="badge bg-green text-white me-2">Validée Auto</span> <strong>Correspondance unique :</strong> L'API Open Data a retourné un seul et unique résultat certain. L'entité est automatiquement validée, enrichie et versée dans le tableau de bord sans action manuelle requise.</li>
+        <li><span class="badge bg-blue text-white me-2">En Attente</span> <strong>Homonymes multiples (Rapprochement) :</strong> L'API a identifié plusieurs établissements ou entreprises correspondant au nom. La ligne est placée dans l'onglet "Rapprochement" pour que l'opérateur choisisse le bon candidat d'un simple clic sur <em>Choisir</em>.</li>
+        <li><span class="badge bg-azure text-white me-2">Validée Manuelle</span> <strong>Validation par l'opérateur :</strong> L'entité a été confirmée soit en sélectionnant un candidat dans la liste des homonymes, soit via le formulaire de saisie directe.</li>
+        <li><span class="badge bg-danger text-white me-2">Introuvable</span> <strong>Aucun résultat identifié :</strong> La dénomination saisie n'a pas permis de trouver d'entreprise active dans la base nationale. La ligne est dirigée vers l'onglet "Introuvables" afin de permettre une correction du nom de recherche, une relance d'analyse, une saisie étrangère ou une suppression.</li>
+    </ul>
+
+    <h3>9.3. Les Actions et Traitements en Lot</h3>
+    <p>Le sous-menu <strong>Traitements</strong> du menu d'actions regroupe des outils pour piloter la base de données en masse :</p>
+    <ul>
+        <li><strong>🌐 Maj Distances (Villes) :</strong> Scanne les entités validées dont la distance est manquante ou en anomalie pour recalculer automatiquement le géocodage par paquets.</li>
+        <li><strong>📚 Maj NAF :</strong> Réaligne tous les libellés de secteurs d'activité sur la nomenclature officielle INSEE de la table <code>codes_naf</code>.</li>
+        <li><strong>🔁 Relancer les Introuvables :</strong> Réinterroge l'API Open Data Gouv pour toutes les entités actuellement marquées "Introuvables" (très utile après avoir complété les noms ou si l'API était temporairement indisponible).</li>
+        <li><strong>✅ Valider les Connus :</strong> Valide automatiquement les entités en attente dont le numéro SIREN figure déjà dans la liste des partenaires connus (<code>siren_connus</code>).</li>
+        <li><strong>🔄 Repasser en Attente :</strong> Réinitialise le statut des entités pour réexaminer ou re-rapprocher les données si nécessaire.</li>
+    </ul>
+
+    <h3>9.4. Estimation Intelligente du Référentiel Véhicules (ADEME Car Labelling)</h3>
+    <p>Pour le suivi de flotte automobile (Scope 1 & 2), le formulaire d'ajout et d'édition de véhicules propose le bouton <strong>🪄 Auto</strong>. Ce traitement interroge en direct l'API officielle <em>Car Labelling</em> de l'ADEME (data.ademe.fr) pour pré-remplir la consommation mixte homologuée (WLTP en L/100km ou kWh/100km) selon la marque, le modèle et la motorisation indiqués.</p>
+
+
+
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

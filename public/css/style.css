@@ -1,0 +1,119 @@
+/* ==========================================================================
+   EcoTrace 🍃 - Styles Globaux (V2.0.0)
+   ========================================================================== */
+
+/* --- TYPOGRAPHIE & BASE --- */
+body { 
+    font-family: 'Nunito', sans-serif; 
+    background: #f4f7f6; 
+    margin: 0; 
+    padding: 20px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    min-height: 100vh; 
+}
+.container { 
+    width: 100%; 
+    max-width: 1250px; 
+    margin: auto; 
+    flex: 1; 
+}
+h1 { 
+    font-family: 'Fredoka', sans-serif; 
+    color: #27ae60; 
+    margin-top: 0; 
+    margin-bottom: 0;
+}
+h2 { 
+    color: #2c3e50; 
+    font-size: 16px; 
+    margin-bottom: 15px; 
+    border-bottom: 2px solid #eee; 
+    padding-bottom: 5px; 
+    margin-top: 25px;
+}
+
+/* --- ÉLÉMENTS DE FORMULAIRE --- */
+input { 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-size: 14px; 
+    font-family: 'Nunito', sans-serif; 
+}
+input:focus { border-color: #27ae60; outline: none; }
+button { 
+    background: #27ae60; 
+    color: white; 
+    border: none; 
+    padding: 12px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    font-weight: bold; 
+    font-family: 'Nunito', sans-serif;
+}
+button:hover { background: #219150; }
+
+/* --- BOÎTES DE CONNEXION ET D'INSTALLATION --- */
+.login-box, .install-box { 
+    background: white; 
+    padding: 30px; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    width: 100%; 
+}
+.login-box { max-width: 400px; text-align: center; margin: auto; }
+.install-box { max-width: 550px; margin: auto; }
+.login-box input { width: 90%; margin: 10px 0; }
+.login-box button { width: 100%; margin-top: 10px; }
+.error { color: #e74c3c; margin-bottom: 15px; font-weight: bold; }
+.row { display: flex; gap: 15px; margin-bottom: 10px; }
+.form-group { flex: 1; display: flex; flex-direction: column; }
+.form-group label { font-weight: bold; font-size: 13px; color: #555; margin-bottom: 5px; }
+.btn-cancel { text-align: center; display: block; margin-top: 15px; color: #7f8c8d; text-decoration: none; font-weight: bold; }
+.btn-cancel:hover { color: #e74c3c; }
+
+/* --- EN-TÊTE DU TABLEAU DE BORD --- */
+.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; width: 100%; }
+.header-actions { display: flex; gap: 10px; align-items: center; }
+.header-title { display: flex; flex-direction: column; align-items: flex-start; }
+.header-title h1 { font-size: 32px; line-height: 1; }
+.app-version-main, .app-version { font-size: 14px; color: #7f8c8d; font-weight: bold; margin-top: 2px; }
+
+/* --- MENUS DÉROULANTS (DROPDOWNS) --- */
+.dropdown { position: relative; display: inline-block; }
+.dropbtn { background-color: #34495e; padding: 10px 15px; font-size: 14px; }
+.dropbtn:hover { background-color: #2c3e50; }
+.dropdown-content { display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 260px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1000; border-radius: 4px; }
+.dropdown-content a, .dropdown-content button { color: #333; padding: 12px 16px; text-decoration: none; display: block; width: 100%; text-align: left; border: none; background: none; font-size: 14px; border-bottom: 1px solid #eee; }
+.dropdown-content button:last-child, .dropdown-content a:last-child { border-bottom: none; }
+.dropdown-content a:hover, .dropdown-content button:hover { background-color: #f1f1f1; }
+.dropdown:hover .dropdown-content { display: block; }
+.dropdown-submenu { position: relative; display: block; width: 100%; }
+.dropdown-submenu > button::after { content: " ▸"; float: right; opacity: 0.6; font-size: 12px; margin-top: 2px;}
+.dropdown-submenu .dropdown-content-sub { display: none; position: absolute; right: 100%; top: 0; background-color: #ffffff; min-width: 260px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); border-radius: 4px; z-index: 1001; }
+.dropdown-submenu:hover .dropdown-content-sub { display: block; }
+.dropdown-content-sub a, .dropdown-content-sub button { color: #333; padding: 12px 16px; text-decoration: none; display: block; width: 100%; text-align: left; border: none; background: none; font-size: 14px; border-bottom: 1px solid #eee; }
+.dropdown-content-sub a:hover, .dropdown-content-sub button:hover { background-color: #f1f1f1; }
+
+/* --- ONGLETS & BADGES --- */
+.tab-container { margin-bottom: 20px; border-bottom: 2px solid #ddd; display: flex; gap: 10px; width: 100%; }
+.tab-button { background: #eee; color: #555; border-radius: 5px 5px 0 0; }
+.tab-button.active { background: #27ae60; color: white; }
+.tab-button:hover:not(.active) { background: #e0e0e0; }
+.badge { display: inline-block; padding: 3px 8px; color: white; border-radius: 12px; font-size: 12px; margin-left: 5px; }
+.badge-red { background: #e74c3c; } 
+.badge-green { background: #2ecc71; } 
+.badge-blue { background: #3498db; }
+
+/* --- ANIMATIONS --- */
+@keyframes blinker { 50% { opacity: 0; } }
+.update-badge { display: none; color: #e74c3c; font-weight: bold; font-size: 12px; margin-top: 5px; cursor: pointer; animation: blinker 1.5s linear infinite; background: #fadbd8; padding: 2px 8px; border-radius: 12px; }
+
+/* --- PIED DE PAGE --- */
+.footer { text-align: center; padding: 30px 20px; margin-top: 40px; background-color: #fff; border-top: 2px solid #27ae60; border-radius: 8px; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box; }
+.footer-logos { display: flex; justify-content: center; align-items: center; gap: 30px; flex-wrap: wrap; margin-top: 15px; }
+.footer-logos img { height: 35px; width: 35px; object-fit: contain; opacity: 0.6; filter: grayscale(100%); transition: all 0.3s ease; cursor: pointer; }
+.footer-logos img:hover { opacity: 1; filter: grayscale(0%); transform: scale(1.15); }
