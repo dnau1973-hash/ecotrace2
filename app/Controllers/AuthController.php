@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Config\Database;
+use PDO;
 
 class AuthController {
     
@@ -69,11 +70,51 @@ class AuthController {
             $login_error = null;
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_action'])) {
-                $admin_user = Database::getEnv('ADMIN_USER', 'admin');
-                $admin_pass = Database::getEnv('ADMIN_PASS', 'admin');
+                $loginInput = trim($_POST['username'] ?? '');
+                $passInput  = $_POST['password'] ?? '';
 
-                if ($_POST['username'] === $admin_user && $_POST['password'] === $admin_pass) {
-                    $_SESSION['ecotrace_logged_in'] = true; 
+                // Tentative 1 : connexion via la table utilisateurs en base
+                $authOk = false;
+                try {
+                    $pdo = Database::getConnection();
+                    $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = ? AND actif = 1 LIMIT 1");
+                    $stmt->execute([$loginInput]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if ($user && password_verify($passInput, $user['password_hash'])) {
+                        // Mettre à jour la date de dernière connexion
+                        $pdo->prepare("UPDATE utilisateurs SET derniere_connexion = NOW() WHERE id = ?")
+                            ->execute([$user['id']]);
+
+                        $_SESSION['ecotrace_logged_in']    = true;
+                        $_SESSION['ecotrace_user_id']      = (int)$user['id'];
+                        $_SESSION['ecotrace_user_login']   = $user['login'];
+                        $_SESSION['ecotrace_user_nom']     = trim($user['prenom'] . ' ' . $user['nom']);
+                        $_SESSION['ecotrace_user_role']    = $user['role'];
+                        $_SESSION['ecotrace_user_societes'] = $user['societe_ids'] ? json_decode($user['societe_ids'], true) : null;
+                        $authOk = true;
+                    }
+                } catch (\Throwable $e) {
+                    // La table n'existe pas encore → on passe au fallback .env
+                }
+
+                // Tentative 2 (fallback) : identifiants .env
+                if (!$authOk) {
+                    $admin_user = Database::getEnv('ADMIN_USER', 'admin');
+                    $admin_pass = Database::getEnv('ADMIN_PASS', 'admin');
+
+                    if ($loginInput === $admin_user && $passInput === $admin_pass) {
+                        $_SESSION['ecotrace_logged_in']    = true;
+                        $_SESSION['ecotrace_user_id']      = 0;
+                        $_SESSION['ecotrace_user_login']   = $admin_user;
+                        $_SESSION['ecotrace_user_nom']     = 'Administrateur';
+                        $_SESSION['ecotrace_user_role']    = 'superadmin';
+                        $_SESSION['ecotrace_user_societes'] = null;
+                        $authOk = true;
+                    }
+                }
+
+                if ($authOk) {
                     header("Location: ?"); 
                     exit;
                 } else {
@@ -85,5 +126,29 @@ class AuthController {
             require __DIR__ . '/../Views/login.php';
             exit; // On stoppe l'exécution ici tant que ce n'est pas logué
         }
+    }
+
+    /**
+     * Vérifie si l'utilisateur connecté est superadmin
+     */
+    public static function isSuperAdmin(): bool {
+        return ($_SESSION['ecotrace_user_role'] ?? '') === 'superadmin';
+    }
+
+    /**
+     * Vérifie si l'utilisateur connecté est admin ou superadmin
+     */
+    public static function isAdmin(): bool {
+        return in_array($_SESSION['ecotrace_user_role'] ?? '', ['superadmin', 'admin']);
+    }
+
+    /**
+     * Vérifie si l'utilisateur a accès à une société donnée
+     */
+    public static function canAccessSociete(int $societeId): bool {
+        if (self::isSuperAdmin()) return true;
+        $allowed = $_SESSION['ecotrace_user_societes'] ?? null;
+        if ($allowed === null) return true; // null = toutes
+        return in_array($societeId, (array)$allowed);
     }
 }

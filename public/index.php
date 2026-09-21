@@ -180,6 +180,22 @@ if (isset($_GET['action'])) {
         $adminController = new \App\Controllers\AdminController();
         $adminController->database();
         exit;
+    } elseif ($action === 'manage_users') {
+        $userController = new \App\Controllers\UserController();
+        $userController->manage();
+        exit;
+    } elseif ($action === 'save_user_ajax' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $userController = new \App\Controllers\UserController();
+        $userController->saveAjax();
+        exit;
+    } elseif ($action === 'delete_user_ajax' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $userController = new \App\Controllers\UserController();
+        $userController->deleteAjax();
+        exit;
+    } elseif ($action === 'change_password_ajax' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $userController = new \App\Controllers\UserController();
+        $userController->changePasswordAjax();
+        exit;
     } elseif ($action === 'admin_truncate_table') {
         $adminController = new \App\Controllers\AdminController();
         $adminController->truncateTable();

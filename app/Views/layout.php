@@ -59,17 +59,31 @@
                         <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-label="Ouvrir le menu">
                             <span class="avatar avatar-sm bg-green-lt"><i class="fas fa-cogs"></i></span>
                             <div class="d-none d-xl-block ps-2">
-                                <div>Actions & Options</div>
-                                <div class="mt-1 small text-muted">Administrateur</div>
+                                <div><?= htmlspecialchars($_SESSION['ecotrace_user_nom'] ?? 'Utilisateur') ?></div>
+                                <div class="mt-1 small text-muted">
+                                    <?php
+                                    $roleLabel = match($_SESSION['ecotrace_user_role'] ?? '') {
+                                        'superadmin' => '👑 Super Admin',
+                                        'admin'      => '🔧 Administrateur',
+                                        'lecteur'    => '👁 Lecteur',
+                                        default      => 'Connecté'
+                                    };
+                                    echo $roleLabel;
+                                    ?>
+                                </div>
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <a href="#" class="dropdown-item" onclick="openTab('tab-doc')"><i class="fas fa-book me-2"></i> Documentation</a>
-                            <a href="#" class="dropdown-item" onclick="openTab('tab-changelog')"><i class="fas fa-history me-2"></i> Historique (Changelog)</a>
-                            <a href="?action=manage_societes" class="dropdown-item text-primary fw-bold"><i class="fas fa-building me-2"></i> Gérer les Sociétés du groupe</a>
-                            <a href="?action=admin_database" class="dropdown-item text-purple fw-bold"><i class="fas fa-database me-2"></i> Administration BDD</a>
-                            <a href="?action=manage_naf" class="dropdown-item text-indigo fw-bold"><i class="fas fa-tags me-2"></i> Gérer les Codes NAF</a>
+                            <a href="#" class="dropdown-item" onclick="openTab('tab-doc')"><i class="fas fa-book me-2"></i>Documentation</a>
+                            <a href="#" class="dropdown-item" onclick="openTab('tab-changelog')"><i class="fas fa-history me-2"></i>Historique (Changelog)</a>
+                            <a href="?action=manage_societes" class="dropdown-item text-primary fw-bold"><i class="fas fa-building me-2"></i>Gérer les Sociétés du groupe</a>
+                            <a href="?action=admin_database" class="dropdown-item text-purple fw-bold"><i class="fas fa-database me-2"></i>Administration BDD</a>
+                            <a href="?action=manage_naf" class="dropdown-item text-indigo fw-bold"><i class="fas fa-tags me-2"></i>Gérer les Codes NAF</a>
+                            <?php if (($_SESSION['ecotrace_user_role'] ?? '') === 'superadmin'): ?>
+                            <a href="?action=manage_users" class="dropdown-item text-danger fw-bold"><i class="fas fa-users-cog me-2"></i>Gérer les Utilisateurs</a>
+                            <?php endif; ?>
                             <div class="dropdown-divider"></div>
+
                             
                             <div class="dropstart">
                                 <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">

@@ -149,15 +149,43 @@ class InstallController {
                 commentaire VARCHAR(255) NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+            CREATE TABLE IF NOT EXISTS utilisateurs (
+                id            INT AUTO_INCREMENT PRIMARY KEY,
+                nom           VARCHAR(100) NOT NULL,
+                prenom        VARCHAR(100) DEFAULT '',
+                login         VARCHAR(80)  NOT NULL UNIQUE,
+                email         VARCHAR(150) DEFAULT '',
+                password_hash VARCHAR(255) NOT NULL,
+                role          ENUM('superadmin','admin','lecteur') NOT NULL DEFAULT 'lecteur',
+                actif         TINYINT(1) NOT NULL DEFAULT 1,
+                societe_ids   TEXT DEFAULT NULL COMMENT 'JSON array des societe_id autorisees, NULL = toutes',
+                derniere_connexion DATETIME DEFAULT NULL,
+                created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ";
             
             $pdo->exec($sql);
+
 
             // Création de la société par défaut si inexistante
             try {
                 $stmt = $pdo->query("SELECT COUNT(*) FROM societes");
                 if ($stmt->fetchColumn() == 0) {
                     $pdo->exec("INSERT INTO societes (nom, est_defaut) VALUES ('Mon Entreprise (Par défaut)', 1)");
+                }
+            } catch (\PDOException $e) {}
+
+            // Création du superadmin initial depuis les identifiants .env
+            try {
+                $stmt = $pdo->query("SELECT COUNT(*) FROM utilisateurs");
+                if ($stmt->fetchColumn() == 0) {
+                    $adminLogin = Database::getEnv('ADMIN_USER', 'admin');
+                    $adminPass  = Database::getEnv('ADMIN_PASS', 'admin');
+                    $hash = password_hash($adminPass, PASSWORD_BCRYPT);
+                    $stmtIns = $pdo->prepare("INSERT INTO utilisateurs (nom, prenom, login, email, password_hash, role, actif) VALUES (?, ?, ?, ?, ?, 'superadmin', 1)");
+                    $stmtIns->execute(['Administrateur', 'Super', $adminLogin, 'admin@ecotrace.local', $hash]);
                 }
             } catch (\PDOException $e) {}
 
@@ -321,6 +349,34 @@ class InstallController {
                 commentaire VARCHAR(255) NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+        } catch (\PDOException $e) {}
+
+        // Migration : table utilisateurs (ajout si absente sur installation existante)
+        try {
+            $pdo->exec("CREATE TABLE IF NOT EXISTS utilisateurs (
+                id            INT AUTO_INCREMENT PRIMARY KEY,
+                nom           VARCHAR(100) NOT NULL,
+                prenom        VARCHAR(100) DEFAULT '',
+                login         VARCHAR(80)  NOT NULL UNIQUE,
+                email         VARCHAR(150) DEFAULT '',
+                password_hash VARCHAR(255) NOT NULL,
+                role          ENUM('superadmin','admin','lecteur') NOT NULL DEFAULT 'lecteur',
+                actif         TINYINT(1) NOT NULL DEFAULT 1,
+                societe_ids   TEXT DEFAULT NULL,
+                derniere_connexion DATETIME DEFAULT NULL,
+                created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+            // Seed superadmin si la table est vide
+            $stmt = $pdo->query("SELECT COUNT(*) FROM utilisateurs");
+            if ($stmt->fetchColumn() == 0) {
+                $adminLogin = Database::getEnv('ADMIN_USER', 'admin');
+                $adminPass  = Database::getEnv('ADMIN_PASS', 'admin');
+                $hash = password_hash($adminPass, PASSWORD_BCRYPT);
+                $stmtIns = $pdo->prepare("INSERT INTO utilisateurs (nom, prenom, login, email, password_hash, role, actif) VALUES (?, ?, ?, ?, ?, 'superadmin', 1)");
+                $stmtIns->execute(['Administrateur', 'Super', $adminLogin, 'admin@ecotrace.local', $hash]);
+            }
         } catch (\PDOException $e) {}
     }
 }

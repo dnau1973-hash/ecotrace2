@@ -326,7 +326,7 @@ class ImportController {
             $stmtMarkQualifie = $this->pdo->prepare("UPDATE api_resultats SET est_qualifie = 1 WHERE id = ?");
             $stmtCheckDuplicate = $this->pdo->prepare("
                 SELECT id FROM sources_csv 
-                WHERE api_result_id_selectionne = ? AND annee = ? AND statut IN ('valide_auto', 'valide_manuel') 
+                WHERE api_result_id_selectionne = ? AND annee = ? AND societe_id = ? AND statut IN ('valide_auto', 'valide_manuel') 
                 LIMIT 1
             ");
             $stmtUpdateDuplicate = $this->pdo->prepare("UPDATE sources_csv SET montant = montant + ?, poids = poids + ? WHERE id = ?");
@@ -458,11 +458,11 @@ class ImportController {
                 // 3. Gestion des doublons pour la même année (cumul sur ligne existante en base)
                 $existingSourceId = null;
                 if ($apiId) {
-                    $stmtCheckDuplicate->execute([$apiId, $annee]);
+                    $stmtCheckDuplicate->execute([$apiId, $annee, $societeId]);
                     $existingSourceId = $stmtCheckDuplicate->fetchColumn();
                 } else {
-                    $stmtCheckDupAttente = $this->pdo->prepare("SELECT id FROM sources_csv WHERE nom_recherche = ? AND annee = ? AND api_result_id_selectionne IS NULL LIMIT 1");
-                    $stmtCheckDupAttente->execute(["Fournisseur SIREN $siren", $annee]);
+                    $stmtCheckDupAttente = $this->pdo->prepare("SELECT id FROM sources_csv WHERE nom_recherche = ? AND annee = ? AND societe_id = ? AND api_result_id_selectionne IS NULL LIMIT 1");
+                    $stmtCheckDupAttente->execute(["Fournisseur SIREN $siren", $annee, $societeId]);
                     $existingSourceId = $stmtCheckDupAttente->fetchColumn();
                 }
 
@@ -712,19 +712,19 @@ class ImportController {
                 }
             }
 
-            // 3. Cumul anti-doublon pour le même exercice (si présent dans l'exercice)
+            // 3. Cumul anti-doublon pour le même exercice ET la même société
             $existingSourceId = null;
             if ($apiId) {
                 $stmtCheckDup = $this->pdo->prepare("
                     SELECT id FROM sources_csv 
-                    WHERE api_result_id_selectionne = ? AND annee = ? AND statut IN ('valide_auto', 'valide_manuel') 
+                    WHERE api_result_id_selectionne = ? AND annee = ? AND societe_id = ? AND statut IN ('valide_auto', 'valide_manuel') 
                     LIMIT 1
                 ");
-                $stmtCheckDup->execute([$apiId, $annee]);
+                $stmtCheckDup->execute([$apiId, $annee, $societeId]);
                 $existingSourceId = $stmtCheckDup->fetchColumn();
             } else {
-                $stmtCheckDupAttente = $this->pdo->prepare("SELECT id FROM sources_csv WHERE nom_recherche = ? AND annee = ? AND api_result_id_selectionne IS NULL LIMIT 1");
-                $stmtCheckDupAttente->execute(["Fournisseur SIREN $siren", $annee]);
+                $stmtCheckDupAttente = $this->pdo->prepare("SELECT id FROM sources_csv WHERE nom_recherche = ? AND annee = ? AND societe_id = ? AND api_result_id_selectionne IS NULL LIMIT 1");
+                $stmtCheckDupAttente->execute(["Fournisseur SIREN $siren", $annee, $societeId]);
                 $existingSourceId = $stmtCheckDupAttente->fetchColumn();
             }
 
