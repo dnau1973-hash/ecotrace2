@@ -119,38 +119,107 @@ class UpdateController {
 
         $githubRepo = Database::getEnv('GITHUB_REPO', '');
         if (empty($githubRepo)) {
-            echo json_encode(['success' => false, 'message' => 'Dépôt GitHub non configuré.']);
+            echo json_encode(['success' => false, 'message' => 'Dépôt GitHub non configuré. Allez dans Configuration.']);
             exit;
         }
 
-        // Sauvegarde du .env avant mise à jour
+        // ── Pré-vérifications ──────────────────────────────────────────────
+        if (!function_exists('shell_exec') || in_array('shell_exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
+            echo json_encode(['success' => false, 'message' => '❌ <strong>shell_exec est désactivé</strong> sur ce serveur (php.ini).<br>La mise à jour automatique est impossible. Contactez votre hébergeur ou effectuez la mise à jour manuellement via FTP/SSH.']);
+            exit;
+        }
+
+        $gitBin = trim(shell_exec('which git 2>/dev/null') ?: shell_exec('command -v git 2>/dev/null'));
+        if (empty($gitBin)) {
+            echo json_encode(['success' => false, 'message' => '❌ <strong>Git n\'est pas installé</strong> sur ce serveur.<br>Installez git (<code>apt install git</code>) ou effectuez la mise à jour manuellement.']);
+            exit;
+        }
+
+        $steps   = [];
+        $success = true;
+        $appDir  = escapeshellarg($this->appDir);
+
+        // ── Sauvegarde .env ────────────────────────────────────────────────
         $envBackup = file_exists($this->envFile) ? file_get_contents($this->envFile) : false;
 
-        shell_exec('git config --global --add safe.directory ' . escapeshellarg($this->appDir) . ' 2>&1');
+        // ── Configurer git safe directory ──────────────────────────────────
+        shell_exec("git config --global --add safe.directory {$appDir} 2>&1");
 
-        // Initialiser git si nécessaire
+        // ── Étape 1 : Initialiser git si nécessaire ────────────────────────
         if (!is_dir($this->appDir . '/.git')) {
-            shell_exec('git -C ' . escapeshellarg($this->appDir) . ' init 2>&1');
-            shell_exec('git -C ' . escapeshellarg($this->appDir) . ' remote add origin ' . escapeshellarg($githubRepo) . ' 2>&1');
+            $out = trim(shell_exec("git -C {$appDir} init 2>&1"));
+            $steps[] = ['init', $out];
+            if (strpos($out, 'Initialized') === false && strpos($out, 'Réinitialisé') === false && strpos($out, 'nitialized') === false) {
+                // init peut afficher des messages différents selon la langue, on continue quand même
+                // si le répertoire .git n'existe toujours pas, c'est une vraie erreur
+                if (!is_dir($this->appDir . '/.git')) {
+                    echo json_encode(['success' => false, 'message' => '❌ Échec de <code>git init</code>.<br><pre>' . htmlspecialchars($out) . '</pre>', 'steps' => $steps]);
+                    exit;
+                }
+            }
+
+            $out2 = trim(shell_exec("git -C {$appDir} remote add origin " . escapeshellarg($githubRepo) . " 2>&1"));
+            $steps[] = ['remote add', $out2];
         } else {
-            shell_exec('git -C ' . escapeshellarg($this->appDir) . ' remote set-url origin ' . escapeshellarg($githubRepo) . ' 2>&1');
+            $out2 = trim(shell_exec("git -C {$appDir} remote set-url origin " . escapeshellarg($githubRepo) . " 2>&1"));
+            $steps[] = ['remote set-url', $out2];
         }
 
-        shell_exec('git -C ' . escapeshellarg($this->appDir) . ' fetch origin main 2>&1');
-        $output = shell_exec('git -C ' . escapeshellarg($this->appDir) . ' reset --hard origin/main 2>&1');
+        // ── Étape 2 : Fetch ────────────────────────────────────────────────
+        $outFetch = trim(shell_exec("git -C {$appDir} fetch origin main 2>&1"));
+        $steps[] = ['fetch', $outFetch];
 
-        // Restaurer le .env (git reset --hard pourrait l'écraser)
+        if (empty($outFetch) && !is_dir($this->appDir . '/.git/refs')) {
+            echo json_encode(['success' => false, 'message' => '❌ <code>git fetch</code> n\'a retourné aucune sortie. Vérifiez l\'URL du dépôt et le token GitHub.', 'steps' => $steps]);
+            exit;
+        }
+
+        // ── Étape 3 : Reset --hard ─────────────────────────────────────────
+        $outReset = trim(shell_exec("git -C {$appDir} reset --hard origin/main 2>&1"));
+        $steps[] = ['reset', $outReset];
+
+        // ── Restaurer .env ─────────────────────────────────────────────────
         if ($envBackup !== false) {
             file_put_contents($this->envFile, $envBackup);
+            $steps[] = ['.env', 'Fichier .env restauré avec succès.'];
         }
 
-        $newCommit = trim(shell_exec('git -C ' . escapeshellarg($this->appDir) . ' rev-parse HEAD 2>/dev/null'));
+        // ── Vérifier le résultat ───────────────────────────────────────────
+        if (strpos($outReset, 'HEAD is now at') !== false || strpos($outReset, 'HEAD est maintenant') !== false || strpos($outReset, 'HEAD pointe maintenant') !== false) {
+            $newCommit = trim(shell_exec("git -C {$appDir} rev-parse HEAD 2>/dev/null"));
+            echo json_encode([
+                'success' => true,
+                'message' => '🎉 <strong>Mise à jour appliquée avec succès !</strong><br><small class="text-muted">Version : <code>' . substr($newCommit, 0, 7) . '</code></small><br>L\'application va se recharger dans 3 secondes…',
+                'commit'  => substr($newCommit, 0, 7),
+                'steps'   => $steps,
+            ]);
+        } else {
+            // Essai avec FETCH_HEAD si origin/main échoue
+            $outReset2 = trim(shell_exec("git -C {$appDir} reset --hard FETCH_HEAD 2>&1"));
+            $steps[] = ['reset FETCH_HEAD', $outReset2];
 
-        echo json_encode([
-            'success' => true,
-            'message' => '🎉 <strong>Mise à jour appliquée avec succès !</strong><br><small class="text-muted">Version : <code>' . substr($newCommit, 0, 7) . '</code></small><br>L\'application va se recharger dans 3 secondes…',
-            'commit'  => substr($newCommit, 0, 7),
-        ]);
+            if (strpos($outReset2, 'HEAD is now at') !== false || strpos($outReset2, 'HEAD est maintenant') !== false || strpos($outReset2, 'HEAD pointe maintenant') !== false) {
+                $newCommit = trim(shell_exec("git -C {$appDir} rev-parse HEAD 2>/dev/null"));
+                echo json_encode([
+                    'success' => true,
+                    'message' => '🎉 <strong>Mise à jour appliquée avec succès !</strong><br><small class="text-muted">Version : <code>' . substr($newCommit, 0, 7) . '</code></small><br>L\'application va se recharger dans 3 secondes…',
+                    'commit'  => substr($newCommit, 0, 7),
+                    'steps'   => $steps,
+                ]);
+            } else {
+                // Retourner les détails pour diagnostic
+                $stepsHtml = '<details class="mt-2"><summary class="text-muted small" style="cursor:pointer;">Détails des commandes</summary><pre class="mt-1" style="font-size:0.75rem;max-height:150px;overflow:auto;">';
+                foreach ($steps as [$label, $out]) {
+                    $stepsHtml .= htmlspecialchars("[$label]: $out") . "\n";
+                }
+                $stepsHtml .= '</pre></details>';
+                echo json_encode([
+                    'success' => false,
+                    'message' => '❌ <strong>Échec de la mise à jour.</strong><br>La commande <code>git reset</code> n\'a pas retourné de résultat attendu.' . $stepsHtml,
+                    'steps'   => $steps,
+                ]);
+            }
+        }
         exit;
     }
 
