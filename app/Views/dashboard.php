@@ -1014,8 +1014,27 @@ function calcScope1() {
                     </button>
                     <span id="labelDateCloture" class="text-muted small d-none"></span>
                 </div>
-                <!-- Actions avancées : Import par SIREN -->
-                <div class="d-flex align-items-center gap-2">
+                <!-- Champ de recherche + Import SIREN -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <!-- 🔍 Recherche rapide -->
+                    <div class="input-group input-group-sm" style="width: 240px;">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" id="searchJournalDepenses"
+                               class="form-control border-start-0 ps-0"
+                               placeholder="Rechercher fournisseur, NAF…"
+                               oninput="filtrerJournalDepenses(this.value)"
+                               autocomplete="off">
+                        <button class="btn btn-outline-secondary" type="button"
+                                onclick="document.getElementById('searchJournalDepenses').value=''; filtrerJournalDepenses('');"
+                                title="Effacer la recherche" id="btnClearSearchDepenses" style="display:none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <!-- Compteur résultats -->
+                    <span id="searchDepensesCount" class="text-muted small d-none"></span>
+
                     <button type="button" id="btnImportSirenCsv" class="btn btn-teal btn-sm btn-pill" data-bs-toggle="modal" data-bs-target="#modalImportSirenCsv">
                         <i class="fas fa-file-import me-1"></i> Importer Dépenses par SIREN (CSV 3 colonnes)
                     </button>
@@ -1068,6 +1087,18 @@ function calcScope1() {
                                 $anneeSrc = (int)($src['annee'] ?? 2024);
                                 $estCloture = (($statutsExercices[$anneeSrc]['statut'] ?? 'ouvert') === 'cloture');
                                 ?>
+                                <?php
+                                $searchIndex = strtolower(implode(' ', array_filter([
+                                    $src['nom_complet'] ?? '',
+                                    $src['nom_recherche'] ?? '',
+                                    $src['siren'] ?? '',
+                                    $src['activite_principale'] ?? '',
+                                    $src['activite_principale_libelle'] ?? '',
+                                    $src['siege_adresse'] ?? '',
+                                    $anneeSrc,
+                                    number_format($m, 2, '.', ''),
+                                ])));
+                                ?>
                                 <tr class="row-achat-scope3 <?= $estCloture ? 'row-cloturee' : '' ?>" 
                                     data-annee="<?= $anneeSrc ?>" 
                                     data-montant="<?= $m ?>" 
@@ -1075,7 +1106,8 @@ function calcScope1() {
                                     data-distance="<?= $d !== null ? (float)$d : '' ?>" 
                                     data-co2="<?= $co2 ?>" 
                                     data-local="<?= $isLocal ? '1' : '0' ?>"
-                                    data-cloture="<?= $estCloture ? '1' : '0' ?>">
+                                    data-cloture="<?= $estCloture ? '1' : '0' ?>"
+                                    data-search="<?= htmlspecialchars($searchIndex) ?>">
                                     <td class="text-center">
                                         <input class="form-check-input check-achat-scope3" type="checkbox" value="<?= $src['source_id'] ?>" onchange="updateSelectedAchatsScope3()" <?= $estCloture ? 'disabled' : '' ?>>
                                     </td>
@@ -2430,59 +2462,99 @@ function calcScope1() {
     }
 
     function filtrerAnneeScope3(annee) {
+        // Stocker l'année active courante
+        window._scope3AnneeActive = annee;
+        _appliquerFiltresScope3();
+    }
+
+    /**
+     * Filtre le journal des dépenses par texte (fournisseur, NAF, montant)
+     * Combiné avec le filtre d'année actif
+     */
+    function filtrerJournalDepenses(query) {
+        window._scope3SearchQuery = query.toLowerCase().trim();
+        const btn = document.getElementById('btnClearSearchDepenses');
+        if (btn) btn.style.display = query.length > 0 ? '' : 'none';
+        _appliquerFiltresScope3();
+    }
+
+    /**
+     * Applique simultanément le filtre d'année ET le filtre de recherche textuelle
+     */
+    function _appliquerFiltresScope3() {
+        const annee  = window._scope3AnneeActive || 'all';
+        const query  = (window._scope3SearchQuery || '').toLowerCase().trim();
+
         let rows = document.querySelectorAll('.row-achat-scope3');
-        let totalMontant = 0;
-        let totalPoids = 0;
-        let totalCo2 = 0;
-        let totalLocal = 0;
-        let countVisible = 0;
+        let totalMontant = 0, totalPoids = 0, totalCo2 = 0, totalLocal = 0, countVisible = 0;
+        let countSearch  = 0, totalRowsAnnee = 0;
 
         rows.forEach(r => {
-            let rAnnee = r.getAttribute('data-annee');
-            if (annee === 'all' || rAnnee === annee) {
+            const rAnnee = r.getAttribute('data-annee') || '';
+            const matchAnnee = (annee === 'all' || rAnnee === annee);
+
+            // Texte indexable de la ligne (fournisseur, NAF, montant, siren)
+            const rText = (r.getAttribute('data-search') || r.textContent || '').toLowerCase();
+            const matchSearch = (query === '' || rText.includes(query));
+
+            if (matchAnnee) totalRowsAnnee++;
+
+            if (matchAnnee && matchSearch) {
                 r.style.display = '';
                 countVisible++;
                 totalMontant += parseFloat(r.getAttribute('data-montant') || 0);
-                totalPoids += parseFloat(r.getAttribute('data-poids') || 0);
-                totalCo2 += parseFloat(r.getAttribute('data-co2') || 0);
+                totalPoids   += parseFloat(r.getAttribute('data-poids')   || 0);
+                totalCo2     += parseFloat(r.getAttribute('data-co2')     || 0);
                 if (r.getAttribute('data-local') === '1') totalLocal++;
             } else {
                 r.style.display = 'none';
             }
         });
 
-        let emptyRow = document.getElementById('rowEmptyAchats');
-        if (emptyRow) {
-            emptyRow.style.display = (countVisible === 0) ? '' : 'none';
+        // Compteur de résultats de recherche
+        const elCount = document.getElementById('searchDepensesCount');
+        if (elCount) {
+            if (query !== '') {
+                elCount.textContent = countVisible + ' résultat' + (countVisible > 1 ? 's' : '') + ' sur ' + totalRowsAnnee;
+                elCount.classList.remove('d-none');
+                elCount.style.color = countVisible === 0 ? '#e74c3c' : '#636e72';
+            } else {
+                elCount.classList.add('d-none');
+            }
         }
 
-        let elMontant = document.getElementById('kpi-scope3-montant');
+        // Ligne vide
+        const emptyRow = document.getElementById('rowEmptyAchats');
+        if (emptyRow) emptyRow.style.display = (countVisible === 0) ? '' : 'none';
+
+        // KPIs
+        const elMontant = document.getElementById('kpi-scope3-montant');
         if (elMontant) elMontant.innerText = totalMontant.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 
-        let elPoids = document.getElementById('kpi-scope3-poids');
+        const elPoids = document.getElementById('kpi-scope3-poids');
         if (elPoids) elPoids.innerText = (totalPoids / 1000).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' T';
 
-        let elCo2 = document.getElementById('kpi-scope3-co2');
+        const elCo2 = document.getElementById('kpi-scope3-co2');
         if (elCo2) elCo2.innerText = (totalCo2 / 1000).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' tCO₂e';
 
-        let elLocal = document.getElementById('kpi-scope3-local');
+        const elLocal = document.getElementById('kpi-scope3-local');
         if (elLocal) {
-            let taux = countVisible > 0 ? ((totalLocal / countVisible) * 100).toFixed(1) : 0;
+            const taux = countVisible > 0 ? ((totalLocal / countVisible) * 100).toFixed(1) : 0;
             elLocal.innerText = taux + ' %';
         }
 
-        let elCount = document.getElementById('kpi-scope3-count');
-        if (elCount) elCount.innerText = countVisible + ' flux enregistrés';
+        const elKpiCount = document.getElementById('kpi-scope3-count');
+        if (elKpiCount) elKpiCount.innerText = countVisible + ' flux enregistrés';
 
-        // Mettre à jour la deuxième barre d'outils et le statut de clôture
-        mettreAJourBarreCloture(annee);
+        // Barre de clôture (seulement quand pas de filtre texte actif)
+        if (query === '') mettreAJourBarreCloture(annee);
 
-        // Réinitialiser la sélection lors du changement d'année
-        let masterCb = document.getElementById('checkAllAchatsScope3');
+        // Reset sélection sur les lignes masquées
+        const masterCb = document.getElementById('checkAllAchatsScope3');
         if (masterCb) masterCb.checked = false;
         rows.forEach(r => {
             if (r.style.display === 'none') {
-                let cb = r.querySelector('.check-achat-scope3');
+                const cb = r.querySelector('.check-achat-scope3');
                 if (cb) cb.checked = false;
             }
         });
