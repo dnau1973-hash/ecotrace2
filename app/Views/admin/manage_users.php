@@ -378,3 +378,4 @@ function showToast(msg, type = 'success') {
     setTimeout(() => toast.remove(), 3500);
 }
 </script>
+
