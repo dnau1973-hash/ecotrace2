@@ -84,7 +84,12 @@
                             <?php endif; ?>
                             <div class="dropdown-divider"></div>
 
-                            
+                            <a href="?action=updates" class="dropdown-item fw-bold text-green position-relative" id="navLinkUpdates">
+                                <i class="fas fa-sync-alt me-2"></i>Mises à jour
+                                <span id="navUpdateBadge" class="badge bg-danger ms-1 d-none">!</span>
+                            </a>
+
+
                             <div class="dropstart">
                                 <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                     <i class="fas fa-download me-2"></i> Imports
@@ -808,5 +813,26 @@
             }
         }
     </script>
+
+    <?php if (!empty(\App\Config\Database::getEnv('GITHUB_REPO', ''))): ?>
+    <script>
+    // Vérification silencieuse de mise à jour GitHub (après 3s, ne bloque pas le chargement)
+    window.addEventListener('load', function() {
+        setTimeout(async function() {
+            try {
+                const fd = new FormData();
+                fd.append('action', 'check_update_ajax');
+                const r = await fetch('?', { method: 'POST', body: fd });
+                const data = await r.json();
+                if (data.success && data.update_available) {
+                    const badge = document.getElementById('navUpdateBadge');
+                    if (badge) badge.classList.remove('d-none');
+                }
+            } catch(e) { /* silencieux */ }
+        }, 3000);
+    });
+    </script>
+    <?php endif; ?>
+
 </body>
 </html>

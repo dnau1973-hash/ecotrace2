@@ -138,7 +138,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         exit;
     }
 
-    // 3. Routage API standard (recherches, etc.)
+    // 3. Mise à jour GitHub (AJAX)
+    if ($_POST['action'] === 'check_update_ajax') {
+        $updateController = new \App\Controllers\UpdateController();
+        $updateController->checkAjax();
+        exit;
+    }
+
+    if ($_POST['action'] === 'apply_update_ajax') {
+        $updateController = new \App\Controllers\UpdateController();
+        $updateController->applyAjax();
+        exit;
+    }
+
+    // 4. Routage API standard (recherches, etc.)
     $apiController = new \App\Controllers\ApiController();
     $apiController->handle();
     exit;
@@ -180,6 +193,11 @@ if (isset($_GET['action'])) {
         $adminController = new \App\Controllers\AdminController();
         $adminController->database();
         exit;
+    } elseif ($action === 'updates') {
+        $updateController = new \App\Controllers\UpdateController();
+        $updateController->index();
+        exit;
+
     } elseif ($action === 'manage_users') {
         $userController = new \App\Controllers\UserController();
         $userController->manage();
