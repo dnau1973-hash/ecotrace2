@@ -163,3 +163,4 @@ class UpdateController {
         return $commit ? substr($commit, 0, 7) : 'non-versionné';
     }
 }
+

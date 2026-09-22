@@ -74,7 +74,7 @@ $gitRepo = \App\Config\Database::getEnv('GITHUB_REPO', '');
                             <i class="fas fa-search me-2"></i>Vérifier les mises à jour
                         </button>
                         <button type="button" class="btn btn-success d-none" id="btnApplyUpdate" onclick="applyUpdate()">
-                            <i class="fas fa-cloud-download-alt me-2"></i>Appliquer la mise à jour
+                            <i class="fas fa-cloud-download-alt me-2"></i><span id="btnApplyLabel">Initialiser &amp; Mettre à jour</span>
                         </button>
                         <a href="?edit_config" class="btn btn-outline-secondary">
                             <i class="fas fa-cog me-2"></i>Configurer le dépôt
@@ -165,15 +165,39 @@ $gitRepo = \App\Config\Database::getEnv('GITHUB_REPO', '');
 </div>
 
 <script>
-async function checkUpdate() {
-    const btn = document.getElementById('btnCheckUpdate');
-    const btnApply = document.getElementById('btnApplyUpdate');
-    const box = document.getElementById('updateResultBox');
+/**
+ * Affiche le résultat d'un check et montre/cache le bouton d'action
+ */
+function afficherResultatCheck(data) {
+    const box     = document.getElementById('updateResultBox');
     const content = document.getElementById('updateResultContent');
+    const btnApply = document.getElementById('btnApplyUpdate');
+    const btnLabel = document.getElementById('btnApplyLabel');
+
+    box.classList.remove('d-none');
+    box.className = 'alert mb-4 ' + (data.update_available ? 'alert-success' : 'alert-info');
+    content.innerHTML = data.message || '—';
+
+    if (data.update_available) {
+        // Adapter le libellé selon si .git existe ou non
+        if (data.local === '') {
+            btnLabel.textContent = 'Initialiser & Mettre à jour';
+        } else {
+            btnLabel.textContent = 'Appliquer la mise à jour';
+        }
+        btnApply.classList.remove('d-none');
+    } else {
+        btnApply.classList.add('d-none');
+    }
+}
+
+async function checkUpdate() {
+    const btn      = document.getElementById('btnCheckUpdate');
+    const btnApply = document.getElementById('btnApplyUpdate');
+    const box      = document.getElementById('updateResultBox');
     const progress = document.getElementById('updateProgress');
     const progressLabel = document.getElementById('updateProgressLabel');
 
-    // UI : état de chargement
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Vérification…';
     btnApply.classList.add('d-none');
@@ -184,22 +208,16 @@ async function checkUpdate() {
     try {
         const fd = new FormData();
         fd.append('action', 'check_update_ajax');
-        const r = await fetch('?', { method: 'POST', body: fd });
+        const r    = await fetch('?', { method: 'POST', body: fd });
         const data = await r.json();
-
         progress.classList.add('d-none');
-        box.classList.remove('d-none');
-        box.className = 'alert mb-4 ' + (data.update_available ? 'alert-success' : 'alert-info');
-        content.innerHTML = data.message || '—';
-
-        if (data.update_available) {
-            btnApply.classList.remove('d-none');
-        }
+        afficherResultatCheck(data);
     } catch (e) {
         progress.classList.add('d-none');
         box.classList.remove('d-none');
         box.className = 'alert alert-danger mb-4';
-        content.innerHTML = '<i class="fas fa-times-circle me-2"></i>Erreur de communication. Vérifiez votre connexion et le dépôt configuré.';
+        document.getElementById('updateResultContent').innerHTML =
+            '<i class="fas fa-times-circle me-2"></i>Erreur de communication. Vérifiez votre connexion et le dépôt configuré.';
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-search me-2"></i>Vérifier les mises à jour';
@@ -207,11 +225,12 @@ async function checkUpdate() {
 }
 
 async function applyUpdate() {
+    const btnLabel = document.getElementById('btnApplyLabel');
     if (!confirm('Appliquer la mise à jour depuis GitHub ?\n\nL\'application sera rechargée après la mise à jour.\nVotre fichier .env sera automatiquement préservé.')) return;
 
-    const btn = document.getElementById('btnApplyUpdate');
-    const box = document.getElementById('updateResultBox');
-    const content = document.getElementById('updateResultContent');
+    const btn      = document.getElementById('btnApplyUpdate');
+    const box      = document.getElementById('updateResultBox');
+    const content  = document.getElementById('updateResultContent');
     const progress = document.getElementById('updateProgress');
     const progressLabel = document.getElementById('updateProgressLabel');
 
@@ -223,7 +242,7 @@ async function applyUpdate() {
     try {
         const fd = new FormData();
         fd.append('action', 'apply_update_ajax');
-        const r = await fetch('?', { method: 'POST', body: fd });
+        const r    = await fetch('?', { method: 'POST', body: fd });
         const data = await r.json();
 
         progress.classList.add('d-none');
@@ -239,27 +258,26 @@ async function applyUpdate() {
         box.className = 'alert alert-danger mb-4';
         content.innerHTML = '<i class="fas fa-times-circle me-2"></i>Échec critique lors de la mise à jour.';
         btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-cloud-download-alt me-2"></i>Réessayer';
+        btn.innerHTML = '<i class="fas fa-cloud-download-alt me-2"></i><span id="btnApplyLabel">Réessayer</span>';
     }
 }
 
-// Vérification silencieuse au chargement de la page
-(async function silentCheck() {
+// Vérification silencieuse au chargement — exécutée après que le DOM est prêt
+document.addEventListener('DOMContentLoaded', async function() {
     <?php if (!empty($gitRepo)): ?>
     try {
         const fd = new FormData();
         fd.append('action', 'check_update_ajax');
-        const r = await fetch('?', { method: 'POST', body: fd });
+        const r    = await fetch('?', { method: 'POST', body: fd });
         const data = await r.json();
-        if (data.success && data.update_available) {
-            const box = document.getElementById('updateResultBox');
-            const content = document.getElementById('updateResultContent');
-            box.classList.remove('d-none');
-            box.className = 'alert alert-success mb-4';
-            content.innerHTML = data.message;
-            document.getElementById('btnApplyUpdate').classList.remove('d-none');
+        if (data.success) {
+            afficherResultatCheck(data);
         }
-    } catch(e) {}
+    } catch(e) {
+        // Silencieux au chargement
+    }
     <?php endif; ?>
-})();
+});
 </script>
+
+
